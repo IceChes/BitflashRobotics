@@ -11,4 +11,4 @@ Unless otherwise specified, all firmware is to be flashed via Arduino.
 - universal_transmitter_firmware - FW for the gen1 transmitter. Indefinite prototype.
 
 # License
-- conn_test, simplerx, and simpletx are exempt from the GPL3 license as they were not written by me.
+- conn_test, jtag2updi, simplerx, and simpletx are exempt from the GPL3 license as they were not written by me.

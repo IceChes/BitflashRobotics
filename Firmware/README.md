@@ -9,6 +9,9 @@ Unless otherwise specified, all firmware is to be flashed via Arduino.
 - transmitter_gen_2 - FW for my unreleased gen2 transmitter. Prototype.
 - universal_robot_firmware - FW for robots using RF nano and conventional RC parts. Indefinite prototype.
 - universal_transmitter_firmware - FW for the gen1 transmitter. Indefinite prototype.
+- bluepad_testing - Testing FW for Bluepad-based control.
+- bluepad_spinner_servo_desc - Bluepad-based basic spinner.
+- sdmd_serial_test - Checks to make sure SDMD is connected.
 
 # License
 - conn_test, jtag2updi, simplerx, and simpletx are exempt from the GPL3 license as they were not written by me.

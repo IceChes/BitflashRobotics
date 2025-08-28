@@ -1,0 +1,5 @@
+﻿Designator,Footprint,Quantity,Value,LCSC Part #
+"D1, D2",0805,2,LED,
+"J1, J2, J3",QWIIC_SNAPSERIAL,3,QWIIC/SNAPSERIAL,
+J4,PinSocket_1x02_P2.54mm_Vertical,1,Conn_01x02_Pin,
+U1,XIAO-ESP32C3,1,XIAO-ESP32C3,

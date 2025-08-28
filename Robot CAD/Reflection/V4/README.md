@@ -33,4 +33,4 @@ An updated version of the Reflection platform, with a focus on durability and dr
 - 2x M5x14 button head screw
 - 2x M5 lock nut
 
-# Assembly Guide Coming Soon
+# Assembly Guide Not Planned (it's not that hard to figure out)

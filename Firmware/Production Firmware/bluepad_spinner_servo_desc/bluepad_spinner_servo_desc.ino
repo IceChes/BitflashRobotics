@@ -132,8 +132,6 @@ void loop() {
     }
   }
 
-
-
   motor_control.write(MOTOR_1_PIN, motor_1_value);
   motor_control.write(MOTOR_2_PIN, motor_2_value);
   motor_control.write(WEAPON_PIN, esc_value);
@@ -187,6 +185,7 @@ void triggerFailsafe() {
 void onConnectedController(ControllerPtr ctl) {
   bool foundEmptySlot = false;
   for (int i = 0; i < BP32_MAX_GAMEPADS; i++) {
+    ControllerProperties properties = ctl->getProperties();
     if (myControllers[i] == nullptr) {
       Serial.println("BLUEPAD: Controller is connected!");
       myControllers[i] = ctl;

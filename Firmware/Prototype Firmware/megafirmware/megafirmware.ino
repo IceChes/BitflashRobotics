@@ -15,14 +15,14 @@
 //peripheral boards like sensors
 #define PERIPHERAL_TYPE_I2C NO_I2C    //not supported right now
 #define PERIPHERAL_TYPE_SNAP NO_SNAP  //not supported right now
-#define COMPENSATE false;             //not supported right now
+#define COMPENSATE false             //not supported right now
 
-#define VERBOSE_LOGGING false  //whether to send INFO messages to serial
+#define VERBOSE_LOGGING true  //whether to send INFO messages to serial
 
 #define SNAP_CFG_AUTO_BRAKE false
 #define SNAP_CFG_FAIL_BRAKE false
 #define SNAP_CFG_ENABLE_CURVE false
-#define SNAP_CFG_CURVE_VALUE 0
+#define SNAP_CFG_CURVE_VALUE 1
 
 //hard defines, do NOT touch
 #define MOTOR_1_PIN D2
@@ -94,7 +94,7 @@ bool data_updated;
 int motors_minimum_value;
 int motors_maximum_value;
 
-ControllerPtr myControllers[0];
+ControllerPtr myControllers[BP32_MAX_GAMEPADS];
 
 
 
@@ -214,7 +214,10 @@ void setup() {
 
 
 void loop() {
+  
   timer = millis();
+
+
 
 
 
@@ -229,8 +232,14 @@ void loop() {
   if (INVERT_MOTOR_1) {
     used_ls = map(ls, 512, -512, -512, 512);
   }
+  else{
+    used_ls = ls;
+  }
   if (INVERT_MOTOR_2) {
     used_rs = map(rs, 512, -512, -512, 512);
+  }
+  else{
+    used_rs = rs;
   }
 
 
@@ -290,7 +299,7 @@ void loop() {
     //Toggle the throttle lock if A is pressed.
     if (rb && (timer - last_button_press > 200)) {
       weapon_locked = !weapon_locked;
-      rumble(200, 255, 0, myControllers[0]); //buzz the controller to let the user know the lock is tripped
+      rumble(200, 255, 0, myControllers[0]);  //buzz the controller to let the user know the lock is tripped
       last_button_press = timer;
       if (VERBOSE_LOGGING) {
         Serial.println("INFO: Throttle lock tripped.");
@@ -357,74 +366,104 @@ void loop() {
 
 
 
-  //Bluepad32 connection callback
-  void onConnectedController(ControllerPtr ctl) {
-    Serial.println("IMPT: Controller is connected!");
-    myControllers[0] = ctl;
-    ControllerProperties properties = ctl->getProperties();
-    bool valid_controller;
+  if(VERBOSE_LOGGING && timer - last_debug_message > 100){
+    Serial.println("INFO: RAW CONTROLLER INFO DUMP: LS: " + String(used_ls) + " RS: " + String(used_rs));
+    Serial.println("INFO: MODESET INFO DUMP       : DRIVE_ESC: " + String(current_esc) + " WEAPON_ENABLED: " + String(has_weapon) + " WEAPON_PROFILE: " + String(current_weapon_profile));
+    Serial.println("INFO: CONTROL SYSTEM INFO DUMP: MOTOR_1: " + String(motor_1_value) + " MOTOR_2: " + String(motor_2_value) + " WEAPON: " + String(esc_value));
+    last_debug_message = timer;
+  }
+}
 
-    for (int m = 0; m < 6; m++) {
-      if (controller_mac[m] != properties.btaddr[m]) {
-        valid_controller = false;
-      } else {
-        valid_controller = true;
-      }
-    }
-    if (valid_controller) {
-      Serial.println("INFO: Controller validated and bound.");
-      rumble(200, 255, 100, myControllers[0]);
+
+
+
+
+//FUNCTION ZONE
+void triggerFailsafe() {
+  //Failsafe by setting all the controller variables to their rest states.
+  //The rate limit code for the weapon will handle the throttling-down.
+  Serial.println("ERROR: Controller disconnected! Failsafing...");
+  ls = 0;
+  rs = 0;
+  lb = false;
+  rb = false;
+  lt = 0;
+  rt = 0;
+  a = false;
+  b = false;
+  x = false;
+  y = false;
+  buttons_state = 0;
+  dpad_state = 0;
+  super = false;
+
+  //Reset misc variables...
+  inverted = false;
+  weapon_locked = false;
+}
+
+//Bluepad32 connection callback. I don't know how this works, but I am going to add some failsafe code in there.
+void onConnectedController(ControllerPtr ctl) {
+  Serial.println("BLUEPAD: Controller is connected!");
+  myControllers[0] = ctl;
+  ControllerProperties properties = ctl->getProperties();
+  bool valid_controller;
+
+  for (int m = 0; m < 6; m++) {
+    if (controller_mac[m] != properties.btaddr[m]) {
+      valid_controller = false;
     } else {
-      ctl->disconnect();
-      BP32.enableNewBluetoothConnections(true);
-      Serial.println("ERRX: MAC section invalid. Rejecting pairing attempt.");
+      valid_controller = true;
     }
   }
-
-
-
-  //Bluepad32 disconnect callback
-  void onDisconnectedController(ControllerPtr ctl) {
-    bool foundController = false;
-    Serial.println("ERRX: Lost controller connection! Failsafing...");
+  if (valid_controller) {
+    Serial.println("INFO: Controller validated and bound.");
+    rumble(200, 255, 100, myControllers[0]);
+  } else {
+    ctl->disconnect();
     BP32.enableNewBluetoothConnections(true);
-    triggerFailsafe();
+    Serial.println("ERROR: MAC section invalid. Rejecting pairing attempt.");
   }
+}
 
+//ctl->playDualRumble(0 /* delayedStartMs */, 500 /* durationMs */, 127 /* weakMagnitude */, 127 /* strongMagnitude */);
 
+//Bluepad32 disconnect callback
+void onDisconnectedController(ControllerPtr ctl) {
+  bool foundController = false;
+  Serial.println("ERROR: Lost controller connection! Failsafing...");
+  BP32.enableNewBluetoothConnections(true);
+  triggerFailsafe();
+}
 
-  void processGamepad(ControllerPtr ctl) {
+void processGamepad(ControllerPtr ctl) {
 
-    ls = ctl->axisY();
-    rs = ctl->axisRY();
-    lb = ctl->l1();
-    rb = ctl->r1();
-    lt = ctl->brake();
-    rt = ctl->throttle();
-    a = ctl->a();
-    b = ctl->b();
-    x = ctl->x();
-    y = ctl->y();
-    buttons_state = ctl->buttons();
-    dpad_state = ctl->dpad();
-    super = ctl->miscSystem();
-    //This was in the example code. Saving it for later:
-    //ctl->playDualRumble(0 /* delayedStartMs */, 2000 /* durationMs */, 255 /* weakMagnitude */, 255 /* strongMagnitude */);
-  }
+  ls = ctl->axisY();
+  rs = ctl->axisRY();
+  lb = ctl->l1();
+  rb = ctl->r1();
+  lt = ctl->brake();
+  rt = ctl->throttle();
+  a = ctl->a();
+  b = ctl->b();
+  x = ctl->x();
+  y = ctl->y();
+  buttons_state = ctl->buttons();
+  dpad_state = ctl->dpad();
+  super = ctl->miscSystem();
+  //This was in the example code. Saving it for later:
+  //ctl->playDualRumble(0 /* delayedStartMs */, 2000 /* durationMs */, 255 /* weakMagnitude */, 255 /* strongMagnitude */);
+}
 
+void rumble(int _dur, int _pwr_weak, int _pwr_strng, ControllerPtr ctl) {
+  ctl->playDualRumble(0, _dur, _pwr_weak, _pwr_strng);
+}
 
-
-  void rumble(int _dur, int _pwr_weak, int _pwr_strng, ControllerPtr ctl) {
-    ctl->playDualRumble(0, _dur, _pwr_weak, _pwr_strng);
-  }
-
-
-
-  //I have no idea what this does. This is a great library, if only they would document it.
-  void processControllers() {
-    for (auto myController : myControllers) {
-      if (myController && myController->isConnected() && myController->hasData()) {
-        processGamepad(myController);
-      }
+//I have no idea what this does. This is a great library, if only they would document it.
+void processControllers() {
+  for (auto myController : myControllers) {
+    if (myController && myController->isConnected() && myController->hasData()) {
+      processGamepad(myController);
     }
   }
+}

@@ -15,7 +15,7 @@ Serial.write(150);  //raw value to write to motor 1
 ```
 
 ## Features
--	Auto-braking: Automatically brakes individual outputs after they are inactive for 100ms. The 100ms timeout is not current editable by sending commands, and the firmware must be modified.
+-	Auto-braking: Automatically brakes individual outputs after they are inactive for 100ms. The 100ms timeout is not currently editable by sending commands, and the firmware must be modified.
 -	Curving: Curve the throttle to increase precision at low throttle values. 
 
 ## Basic Commands

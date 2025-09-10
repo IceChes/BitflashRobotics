@@ -2,6 +2,7 @@
 #include <Servo.h>
 #include <SoftwareSerial.h>
 
+<<<<<<< Updated upstream
 //Motor settings
 #define MOTORS_MINIMUM_VALUE -100  //0-100
 #define MOTORS_MAXIMUM_VALUE 100
@@ -23,6 +24,8 @@
 #define SNAP_CFG_FAIL_BRAKE false
 #define SNAP_CFG_ENABLE_CURVE false
 #define SNAP_CFG_CURVE_VALUE 1
+=======
+>>>>>>> Stashed changes
 
 //hard defines, do NOT touch
 #define MOTOR_1_PIN D2
@@ -49,13 +52,11 @@
 
 
 
-
-
 //MAC address of your controller
 uint8_t controller_mac[6] = { 0xF2, 0x8D, 0x95, 0xD5, 0x01, 0xE6 };
 
-EspSoftwareSerial::UART snapSerial1;  //motor driver
-EspSoftwareSerial::UART snapSerial2;  //other peripheral
+EspSoftwareSerial::UART snapSerial1;  //motor driver ONLY
+EspSoftwareSerial::UART snapSerial2;  //other peripheral ONLY
 
 Servo motor_control;  //servo object. it's easiest to define this regardless of if it is used or not
 
@@ -93,16 +94,19 @@ bool weapon_locked = false;
 bool data_updated;
 int motors_minimum_value;
 int motors_maximum_value;
+int battery_level;
 
 ControllerPtr myControllers[BP32_MAX_GAMEPADS];
 
 
 
 
+
+//ENUMS FOR CONTROL SYSTEMS
 //esc types
 enum esc {
-  SNAP,
-  SERVO
+  SNAP,  //snapserial
+  SERVO  //servo desc
 };
 esc current_esc = DRIVE_ESC;
 
@@ -276,6 +280,13 @@ void loop() {
   //esc handler switch
   switch (current_esc) {
     case SNAP:
+
+      //read battery level
+      if (snapSerial1.available()) {
+        battery_level = snapSerial1.read();
+      }
+
+      //write motor stuff
       snapSerial1.write(SNAP_CMD_WRITE_MOTOR_1);
       snapSerial1.write(motor_1_value);
       snapSerial1.write(SNAP_CMD_WRITE_MOTOR_2);

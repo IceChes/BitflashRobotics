@@ -3388,7 +3388,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "+V"
 			(at 87.122 67.818 0)
 			(effects
 				(font
@@ -3585,7 +3585,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "+V"
 			(at 107.442 50.546 90)
 			(effects
 				(font
@@ -4155,8 +4155,8 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
-			(at 102.87 73.66 90)
+		(property "Value" "+V"
+			(at 102.87 73.66 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5038,7 +5038,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "9b0760c8-3010-4337-b23c-27b95f2291b4")
 		(property "Reference" "#PWR015"
 			(at 153.67 121.92 0)
@@ -5049,13 +5048,13 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
-			(at 146.05 121.92 90)
+		(property "Value" "+V"
+			(at 145.796 124.714 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
 		(property "Footprint" ""
@@ -5338,7 +5337,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "+V"
 			(at 67.818 80.518 90)
 			(effects
 				(font
@@ -5473,8 +5472,8 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
-			(at 128.27 49.53 90)
+		(property "Value" "+V"
+			(at 131.572 46.228 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6005,7 +6004,7 @@
 				)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "R0-220"
 			(at 52.07 77.47 90)
 			(effects
 				(font
@@ -6063,7 +6062,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "e294e91f-5385-49d4-9de3-943e6f40c1ef")
 		(property "Reference" "#PWR014"
 			(at 153.67 91.44 0)
@@ -6074,13 +6072,13 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
-			(at 146.05 91.44 90)
+		(property "Value" "+V"
+			(at 145.796 95.758 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
 		(property "Footprint" ""

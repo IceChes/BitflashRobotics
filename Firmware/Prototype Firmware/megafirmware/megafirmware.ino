@@ -16,7 +16,7 @@
 //peripheral boards like sensors
 #define PERIPHERAL_TYPE_I2C NO_I2C    //not supported right now
 #define PERIPHERAL_TYPE_SNAP NO_SNAP  //not supported right now
-#define COMPENSATE false             //not supported right now
+#define COMPENSATE false              //not supported right now
 
 #define VERBOSE_LOGGING true  //whether to send INFO messages to serial
 
@@ -24,7 +24,7 @@
 #define SNAP_CFG_FAIL_BRAKE false
 #define SNAP_CFG_ENABLE_CURVE false
 #define SNAP_CFG_CURVE_VALUE 1
-=======
+  == == == =
 >>>>>>> Stashed changes
 
 //hard defines, do NOT touch
@@ -52,8 +52,8 @@
 
 
 
-//MAC address of your controller
-uint8_t controller_mac[6] = { 0xF2, 0x8D, 0x95, 0xD5, 0x01, 0xE6 };
+  //MAC address of your controller
+  uint8_t controller_mac[6] = { 0xF2, 0x8D, 0x95, 0xD5, 0x01, 0xE6 };
 
 EspSoftwareSerial::UART snapSerial1;  //motor driver ONLY
 EspSoftwareSerial::UART snapSerial2;  //other peripheral ONLY
@@ -148,8 +148,11 @@ void setup() {
   switch (current_esc) {
     case SNAP:
 
-      motors_minimum_value = map(MOTORS_MINIMUM_VALUE, -100, 100, 0, 200);
-      motors_maximum_value = map(MOTORS_MAXIMUM_VALUE, -100, 100, 0, 200);
+      motor_1_minimum_value = map(MOTOR_1_MINIMUM_VALUE, -100, 100, 0, 200);
+      motor_1_maximum_value = map(MOTOR_1_MAXIMUM_VALUE, -100, 100, 0, 200);
+      motor_2_minimum_value = map(MOTOR_2_MINIMUM_VALUE, -100, 100, 0, 200);
+      motor_2_maximum_value = map(MOTOR_1_MAXIMUM_VALUE, -100, 100, 0, 200);
+
 
       //auto brake
       if (SNAP_CFG_AUTO_BRAKE) {
@@ -175,8 +178,10 @@ void setup() {
       break;
 
     case SERVO:
-      motors_minimum_value = map(MOTORS_MINIMUM_VALUE, -100, 100, 1000, 2000);
-      motors_maximum_value = map(MOTORS_MAXIMUM_VALUE, -100, 100, 1000, 2000);
+      motor_1_minimum_value = map(MOTOR_1_MINIMUM_VALUE, -100, 100, 1000, 2000);
+      motor_1_maximum_value = map(MOTOR_1_MAXIMUM_VALUE, -100, 100, 1000, 2000);
+      motor_2_minimum_value = map(MOTOR_2_MINIMUM_VALUE, -100, 100, 1000, 2000);
+      motor_2_maximum_value = map(MOTOR_1_MAXIMUM_VALUE, -100, 100, 1000, 2000);
       break;
   }
 
@@ -218,10 +223,8 @@ void setup() {
 
 
 void loop() {
-  
+
   timer = millis();
-
-
 
 
 
@@ -233,16 +236,18 @@ void loop() {
     processControllers();
   }
 
+
+
+
+
   if (INVERT_MOTOR_1) {
     used_ls = map(ls, 512, -512, -512, 512);
-  }
-  else{
+  } else {
     used_ls = ls;
   }
   if (INVERT_MOTOR_2) {
     used_rs = map(rs, 512, -512, -512, 512);
-  }
-  else{
+  } else {
     used_rs = rs;
   }
 
@@ -252,8 +257,8 @@ void loop() {
 
   //inversion handling. this logic will work regardless of what esc is selected
   if (inverted) {
-    motor_1_value = map(used_rs, -512, 512, motors_maximum_value, motors_minimum_value);
-    motor_2_value = map(used_ls, -512, 512, motors_maximum_value, motors_minimum_value);
+    motor_1_value = map(used_rs, -512, 512, motor_1_maximum_value, motor_1_minimum_value);
+    motor_2_value = map(used_ls, -512, 512, motor_2_maximum_value, motor_2_minimum_value);
     if (dpad_state == 1) {
       inverted = false;
       rumble(200, 255, 0, myControllers[0]);
@@ -263,8 +268,8 @@ void loop() {
       }
     }
   } else if (!inverted) {
-    motor_1_value = map(used_ls, -512, 512, motors_minimum_value, motors_maximum_value);
-    motor_2_value = map(used_rs, -512, 512, motors_minimum_value, motors_maximum_value);
+    motor_1_value = map(used_ls, -512, 512, motor_1_minimum_value, motor_1_maximum_value);
+    motor_2_value = map(used_rs, -512, 512, motor_2_minimum_value, motor_2_maximum_value);
     if (dpad_state == 2) {
       inverted = true;
       rumble(200, 0, 255, myControllers[0]);
@@ -274,6 +279,7 @@ void loop() {
       }
     }
   }
+
 
 
 
@@ -377,7 +383,7 @@ void loop() {
 
 
 
-  if(VERBOSE_LOGGING && timer - last_debug_message > 100){
+  if (VERBOSE_LOGGING && timer - last_debug_message > 100) {
     Serial.println("INFO: RAW CONTROLLER INFO DUMP: LS: " + String(used_ls) + " RS: " + String(used_rs));
     Serial.println("INFO: MODESET INFO DUMP       : DRIVE_ESC: " + String(current_esc) + " WEAPON_ENABLED: " + String(has_weapon) + " WEAPON_PROFILE: " + String(current_weapon_profile));
     Serial.println("INFO: CONTROL SYSTEM INFO DUMP: MOTOR_1: " + String(motor_1_value) + " MOTOR_2: " + String(motor_2_value) + " WEAPON: " + String(esc_value));

@@ -1,6 +1,8 @@
 //Motor settings
-#define MOTORS_MINIMUM_VALUE -100  //0-100
-#define MOTORS_MAXIMUM_VALUE 100
+#define MOTOR_1_MINIMUM_VALUE -100  //-100-100
+#define MOTOR_1_MAXIMUM_VALUE 100
+#define MOTOR_2_MINIMUM_VALUE -100  
+#define MOTOR_2_MAXIMUM_VALUE 100
 #define INVERT_MOTOR_1 false  //whether the motors are wired backwards
 #define INVERT_MOTOR_2 true
 

@@ -5,6 +5,167 @@
 	(uuid "6b836b10-3dda-47fa-ae17-1c3cd42ae45d")
 	(paper "A4")
 	(lib_symbols
+		(symbol "Device:Buzzer"
+			(pin_names
+				(offset 0.0254)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "BZ"
+				(at 3.81 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "Buzzer"
+				(at 3.81 -1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at -0.635 2.54 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at -0.635 2.54 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Buzzer, polarized"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "quartz resonator ceramic"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "*Buzzer*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Buzzer_0_1"
+				(polyline
+					(pts
+						(xy -1.651 1.905) (xy -1.143 1.905)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.397 2.159) (xy -1.397 1.651)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start 0 3.175)
+					(mid 3.1612 0)
+					(end 0 -3.175)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 3.175) (xy 0 -3.175)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Buzzer_1_1"
+				(pin passive line
+					(at -2.54 2.54 0)
+					(length 2.54)
+					(name "+"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -2.54 -2.54 0)
+					(length 2.54)
+					(name "-"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:C"
 			(pin_numbers
 				(hide yes)
@@ -2525,10 +2686,6 @@
 		(at 130.81 43.18)
 		(uuid "cf89a6d8-40f8-4781-87ce-51737bad4959")
 	)
-	(no_connect
-		(at 130.81 50.8)
-		(uuid "d4d4491d-38d3-40b3-8fe7-d3f98a10b4f9")
-	)
 	(wire
 		(pts
 			(xy 243.84 92.71) (xy 243.84 109.22)
@@ -2648,6 +2805,16 @@
 			(type default)
 		)
 		(uuid "80f1344c-d90e-4f99-b06c-a0ff6c8c00f9")
+	)
+	(wire
+		(pts
+			(xy 130.81 50.8) (xy 140.97 50.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8b06d35d-592d-455b-ba82-a7f2ff56a50d")
 	)
 	(wire
 		(pts
@@ -2780,7 +2947,7 @@
 		(uuid "469bb1f1-b7ee-4fee-9b95-bda30192e408")
 	)
 	(label "TX"
-		(at 90.17 27.94 270)
+		(at 157.48 29.21 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2860,7 +3027,7 @@
 		(uuid "a826c6d1-a6ee-4658-9f6b-8e40e27c8a16")
 	)
 	(label "RX"
-		(at 87.63 27.94 270)
+		(at 154.94 29.21 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2881,7 +3048,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 85.09 27.94 180)
+		(at 152.4 29.21 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2889,7 +3056,7 @@
 		(dnp no)
 		(uuid "10426459-0f67-487d-b80d-8578d377d102")
 		(property "Reference" "#PWR05"
-			(at 85.09 24.13 0)
+			(at 152.4 25.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2898,7 +3065,7 @@
 			)
 		)
 		(property "Value" "+V"
-			(at 85.852 32.258 0)
+			(at 153.162 33.528 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2906,7 +3073,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 85.09 27.94 0)
+			(at 152.4 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2915,7 +3082,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 85.09 27.94 0)
+			(at 152.4 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2924,7 +3091,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 85.09 27.94 0)
+			(at 152.4 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3094,7 +3261,7 @@
 	)
 	(symbol
 		(lib_id "New_Library:PRT-14417")
-		(at 82.55 27.94 90)
+		(at 149.86 29.21 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3103,7 +3270,7 @@
 		(fields_autoplaced yes)
 		(uuid "272db618-2bbe-4bb9-837b-c045b9a77da4")
 		(property "Reference" "J5"
-			(at 93.98 17.7799 90)
+			(at 161.29 19.0499 90)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -3112,7 +3279,7 @@
 			)
 		)
 		(property "Value" "PRT-14417"
-			(at 93.98 20.3199 90)
+			(at 161.29 21.5899 90)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -3120,8 +3287,8 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "User:CONN_PRT-14417_SPK"
-			(at 82.55 27.94 0)
+		(property "Footprint" "User:QWIIC_SNAPSERIAL"
+			(at 149.86 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3131,7 +3298,7 @@
 			)
 		)
 		(property "Datasheet" "PRT-14417"
-			(at 82.55 27.94 0)
+			(at 149.86 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3141,7 +3308,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 82.55 27.94 0)
+			(at 149.86 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3195,7 +3362,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 218.44 110.998 90)
 			(effects
 				(font
@@ -3264,7 +3431,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "LED_SMD:LED_0805_2012Metric"
 			(at 130.81 95.25 0)
 			(effects
 				(font
@@ -3323,10 +3490,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "3b5668dd-c708-4a45-b870-95908d2bba40")
 		(property "Reference" "D1"
-			(at 136.2075 50.8 0)
+			(at 137.922 59.944 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3334,14 +3500,14 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 136.2075 53.34 0)
+			(at 137.922 62.484 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "LED_SMD:LED_0805_2012Metric"
 			(at 134.62 58.42 0)
 			(effects
 				(font
@@ -3482,7 +3648,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 218.44 107.188 90)
 			(effects
 				(font
@@ -3747,7 +3913,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 115.57 30.7848 0)
 			(effects
 				(font
@@ -3882,7 +4048,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 191.77 84.7852 0)
 			(effects
 				(font
@@ -4056,6 +4222,73 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 146.05 50.8 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8904dc3d-6d82-4748-9908-57f119c48a2b")
+		(property "Reference" "#PWR017"
+			(at 152.4 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 149.86 50.7999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 146.05 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 146.05 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 146.05 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a3140ffc-362a-4555-b7f2-4cf0d947c0b9")
+		)
+		(instances
+			(project "Lumen"
+				(path "/6b836b10-3dda-47fa-ae17-1c3cd42ae45d"
+					(reference "#PWR017")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 157.48 83.82 270)
 		(unit 1)
@@ -4080,7 +4313,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 157.48 82.042 90)
 			(effects
 				(font
@@ -4347,7 +4580,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "LED_SMD:LED_0805_2012Metric"
 			(at 137.16 95.25 0)
 			(effects
 				(font
@@ -4425,7 +4658,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "LED_SMD:LED_0805_2012Metric"
 			(at 143.51 95.25 0)
 			(effects
 				(font
@@ -4478,7 +4711,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 82.55 27.94 0)
+		(at 149.86 29.21 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4486,7 +4719,7 @@
 		(dnp no)
 		(uuid "d1ea725f-5085-4a6d-84e6-42ff5f46e729")
 		(property "Reference" "#PWR04"
-			(at 82.55 34.29 0)
+			(at 149.86 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4495,7 +4728,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 78.232 31.242 0)
+			(at 145.542 32.512 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4503,7 +4736,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 82.55 27.94 0)
+			(at 149.86 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4512,7 +4745,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 82.55 27.94 0)
+			(at 149.86 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4521,7 +4754,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 82.55 27.94 0)
+			(at 149.86 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4567,7 +4800,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 173.99 49.8348 0)
 			(effects
 				(font
@@ -4903,7 +5136,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 218.44 103.378 90)
 			(effects
 				(font
@@ -4940,6 +5173,76 @@
 			(project ""
 				(path "/6b836b10-3dda-47fa-ae17-1c3cd42ae45d"
 					(reference "R1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:Buzzer")
+		(at 143.51 48.26 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "eb935b64-9c34-421f-bfce-5256214647f5")
+		(property "Reference" "BZ1"
+			(at 147.32 46.2348 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "Buzzer"
+			(at 147.32 48.7748 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "User:CPT-9019A_CUD"
+			(at 140.97 48.895 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 140.97 48.895 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Buzzer, polarized"
+			(at 143.51 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "193dfcdd-e9b6-442a-9b80-532564c94d32")
+		)
+		(pin "2"
+			(uuid "314062d7-c351-430d-84ca-1886de4d58e4")
+		)
+		(instances
+			(project ""
+				(path "/6b836b10-3dda-47fa-ae17-1c3cd42ae45d"
+					(reference "BZ1")
 					(unit 1)
 				)
 			)

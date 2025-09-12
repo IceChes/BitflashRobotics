@@ -5,34 +5,32 @@
 	(uuid "6b836b10-3dda-47fa-ae17-1c3cd42ae45d")
 	(paper "A4")
 	(lib_symbols
-		(symbol "Device:Buzzer"
+		(symbol "Connector:Conn_01x01_Socket"
 			(pin_names
-				(offset 0.0254)
+				(offset 1.016)
 				(hide yes)
 			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "BZ"
-				(at 3.81 1.27 0)
+			(property "Reference" "J"
+				(at 0 2.54 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify left)
 				)
 			)
-			(property "Value" "Buzzer"
-				(at 3.81 -1.27 0)
+			(property "Value" "Conn_01x01_Socket"
+				(at 0 -2.54 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify left)
 				)
 			)
 			(property "Footprint" ""
-				(at -0.635 2.54 90)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -41,15 +39,6 @@
 				)
 			)
 			(property "Datasheet" "~"
-				(at -0.635 2.54 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Buzzer, polarized"
 				(at 0 0 0)
 				(effects
 					(font
@@ -58,7 +47,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "quartz resonator ceramic"
+			(property "Description" "Generic connector, single row, 01x01, script generated"
 				(at 0 0 0)
 				(effects
 					(font
@@ -67,7 +56,15 @@
 					(hide yes)
 				)
 			)
-			(property "ki_fp_filters" "*Buzzer*"
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "connector"
 				(at 0 0 0)
 				(effects
 					(font
@@ -76,25 +73,22 @@
 					(hide yes)
 				)
 			)
-			(symbol "Buzzer_0_1"
+			(property "ki_fp_filters" "Connector*:*_1x??_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Conn_01x01_Socket_1_1"
 				(polyline
 					(pts
-						(xy -1.651 1.905) (xy -1.143 1.905)
+						(xy -1.27 0) (xy -0.508 0)
 					)
 					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.397 2.159) (xy -1.397 1.651)
-					)
-					(stroke
-						(width 0)
+						(width 0.1524)
 						(type default)
 					)
 					(fill
@@ -102,35 +96,21 @@
 					)
 				)
 				(arc
-					(start 0 3.175)
-					(mid 3.1612 0)
-					(end 0 -3.175)
+					(start 0 -0.508)
+					(mid -0.5058 0)
+					(end 0 0.508)
 					(stroke
-						(width 0)
+						(width 0.1524)
 						(type default)
 					)
 					(fill
 						(type none)
 					)
 				)
-				(polyline
-					(pts
-						(xy 0 3.175) (xy 0 -3.175)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "Buzzer_1_1"
 				(pin passive line
-					(at -2.54 2.54 0)
-					(length 2.54)
-					(name "+"
+					(at -5.08 0 0)
+					(length 3.81)
+					(name "Pin_1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -138,24 +118,6 @@
 						)
 					)
 					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -2.54 -2.54 0)
-					(length 2.54)
-					(name "-"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2683,6 +2645,10 @@
 		(uuid "ab98ab59-fada-4fa3-9c48-0c7e50d1337f")
 	)
 	(no_connect
+		(at 130.81 50.8)
+		(uuid "af36323e-548b-44dd-863a-d52d9d0f4e1a")
+	)
+	(no_connect
 		(at 130.81 43.18)
 		(uuid "cf89a6d8-40f8-4781-87ce-51737bad4959")
 	)
@@ -2805,16 +2771,6 @@
 			(type default)
 		)
 		(uuid "80f1344c-d90e-4f99-b06c-a0ff6c8c00f9")
-	)
-	(wire
-		(pts
-			(xy 130.81 50.8) (xy 140.97 50.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8b06d35d-592d-455b-ba82-a7f2ff56a50d")
 	)
 	(wire
 		(pts
@@ -2945,6 +2901,16 @@
 			(justify right bottom)
 		)
 		(uuid "469bb1f1-b7ee-4fee-9b95-bda30192e408")
+	)
+	(label "UPDI"
+		(at 120.65 24.13 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "666c0f17-ab96-4163-b8d1-49236e7bb8af")
 	)
 	(label "TX"
 		(at 157.48 29.21 270)
@@ -4222,73 +4188,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 146.05 50.8 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "8904dc3d-6d82-4748-9908-57f119c48a2b")
-		(property "Reference" "#PWR017"
-			(at 152.4 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 149.86 50.7999 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 146.05 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 146.05 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 146.05 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "a3140ffc-362a-4555-b7f2-4cf0d947c0b9")
-		)
-		(instances
-			(project "Lumen"
-				(path "/6b836b10-3dda-47fa-ae17-1c3cd42ae45d"
-					(reference "#PWR017")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 157.48 83.82 270)
 		(unit 1)
@@ -4908,6 +4807,73 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:Conn_01x01_Socket")
+		(at 120.65 19.05 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "da11d5bd-77bf-40bd-8f1b-df95ba785384")
+		(property "Reference" "J1"
+			(at 121.92 18.4149 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "Conn_01x01_Socket"
+			(at 121.92 20.9549 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x01_P2.54mm_Vertical"
+			(at 120.65 19.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 120.65 19.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x01, script generated"
+			(at 120.65 19.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b3ffc570-444b-4fbe-8077-4c5d66f9906a")
+		)
+		(instances
+			(project ""
+				(path "/6b836b10-3dda-47fa-ae17-1c3cd42ae45d"
+					(reference "J1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "MCU_Microchip_ATtiny:ATtiny1617-M")
 		(at 115.57 60.96 0)
 		(unit 1)
@@ -5173,76 +5139,6 @@
 			(project ""
 				(path "/6b836b10-3dda-47fa-ae17-1c3cd42ae45d"
 					(reference "R1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:Buzzer")
-		(at 143.51 48.26 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "eb935b64-9c34-421f-bfce-5256214647f5")
-		(property "Reference" "BZ1"
-			(at 147.32 46.2348 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "Buzzer"
-			(at 147.32 48.7748 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "User:CPT-9019A_CUD"
-			(at 140.97 48.895 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 140.97 48.895 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Buzzer, polarized"
-			(at 143.51 48.26 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "193dfcdd-e9b6-442a-9b80-532564c94d32")
-		)
-		(pin "2"
-			(uuid "314062d7-c351-430d-84ca-1886de4d58e4")
-		)
-		(instances
-			(project ""
-				(path "/6b836b10-3dda-47fa-ae17-1c3cd42ae45d"
-					(reference "BZ1")
 					(unit 1)
 				)
 			)

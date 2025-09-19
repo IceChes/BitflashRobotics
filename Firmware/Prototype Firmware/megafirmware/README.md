@@ -1,6 +1,6 @@
 # MegaFirmware
 ## Introduction
-MegaFirmware is an attempt to streamline Bitflash Robotics receiver firmware into a single unified build with a configuration file and expandable main program. 
+MegaFirmware is an attempt to streamline Bitflash Robotics receiver firmware into a single unified build with a configuration file and expandable main program. It is in early testing, so it is here.
 
 ## Design Intent
 - MegaFirmware is designed to run only on the Bitflash Robotics Xiao ESP32-C3 mainboard.

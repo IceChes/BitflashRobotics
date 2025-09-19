@@ -21,14 +21,14 @@
 #define CMD_GET_IMU_ACCEL_Y 14
 #define CMD_GET_IMU_ACCEL_Z 15
 
-#define CMD_GET_IMU_ORIEN_PITCH 16
-#define CMD_GET_IMU_ORIEN_YAW 17
-#define CMD_GET_IMU_ORIEN_ROLL 18
+#define CMD_GET_IMU_ORIEN_PITCH 16  //forward
+#define CMD_GET_IMU_ORIEN_YAW 17    //rotation
+#define CMD_GET_IMU_ORIEN_ROLL 18   //side
 
-#define PIN_LED_1
-#define PIN_LED_2
-#define PIN_LED_3
-#define PIN_LED_4
+#define PIN_LED_1 0  //all of these are pwm pins
+#define PIN_LED_2 1
+#define PIN_LED_3 2
+#define PIN_LED_4 3
 
 #define STT_LED_BATTERY 0
 #define STT_LED_BATTERY_CRITICAL 1
@@ -45,6 +45,8 @@
 #define STT_LED_LUMEN_INIT_FAIL 6
 #define STT_LED_LUMEN_IMU_FAIL 7
 #define STT_LED_LUMEN_INVERTED 8
+
+
 
 //led states
 byte led_1_2_states[3] = { STT_LED_BATTERY,
@@ -107,92 +109,91 @@ void loop() {
     data = Serial.read();
 
     if (data < 3) {  //0, 1, and 2 are LED 1+2 commands
-      led_1_2_state = led_1_2_states[data]; 
+      led_1_2_state = led_1_2_states[data];
     }
 
-    else if (data >= 3 && data < 12) { //3-11 are LED 3+4 commands
-      led_3_4_state = led_3_4_states[data];
+    else if (data >= 3 && data < 12) {  //3-11 are LED 3+4 commands
+      led_3_4_state = led_3_4_states[data-3];
     }
 
-    else if (data >= 12 && data < 100){
+    else if (data >= 12 && data < 100) {
       //TODO: add switch to read and use the BNO data
     }
 
-    else if (data >= 100 && data < 201){
+    else if (data >= 100 && data < 201) {
       battery_level = map(data, 100, 200, 0, 100);
     }
-
   }
 
-  switch(led_1_2_state){
+  switch (led_1_2_state) {
     case STT_LED_BATTERY:
-    
-    break;
+
+      break;
 
 
     case STT_LED_BATTERY_CRITICAL:
 
-    break;
+      break;
 
 
     case STT_LED_FAILSAFE:
-    
-    break;
+
+      break;
 
 
     default:
 
-    break;
+      break;
   }
 
-  switch(led_3_4_state){
+  switch (led_3_4_state) {
     case STT_LED_SNAP_INIT_FAIL:
 
-    break;
+      break;
 
 
     case STT_LED_SNAP_LOST_CONNECTION:
 
-    break;
+      break;
 
 
     case STT_LED_SNAP_FAULT_GENERAL:
 
-    break;
+      break;
 
 
     case STT_LED_FIREFLY_INIT_FAIL:
 
-    break;
+      break;
 
 
     case STT_LED_FIREFLY_LOST_CONNECTION:
 
-    break;
+      break;
 
 
     case STT_LED_FIREFLY_FAULT_GENERAL:
 
-    break;
+      break;
 
 
     case STT_LED_LUMEN_INIT_FAIL:
 
-    break;
+      break;
 
 
     case STT_LED_LUMEN_IMU_FAIL:
 
-    break;
+      break;
 
 
     case STT_LED_LUMEN_INVERTED:
 
-    break;
+      break;
 
 
     default:
 
-    break;
+      break;
   }
 }

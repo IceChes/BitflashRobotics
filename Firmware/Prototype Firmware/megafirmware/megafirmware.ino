@@ -2,58 +2,33 @@
 #include <Servo.h>
 #include <SoftwareSerial.h>
 
-<<<<<<< Updated upstream
-//Motor settings
-#define MOTORS_MINIMUM_VALUE -100  //0-100
-#define MOTORS_MAXIMUM_VALUE 100
-#define INVERT_MOTOR_1 false  //whether the motors are wired backwards
-#define INVERT_MOTOR_2 true
-
-#define DRIVE_ESC SERVO          //SERVO or SNAP
-#define HAS_WEAPON true          //does the robot have a weapon
-#define WEAPON_PROFILE VERTICAL  //VERTICAL or HORIZONTAL. ignored if HAS_WEAPON is false
-
-//peripheral boards like sensors
-#define PERIPHERAL_TYPE_I2C NO_I2C    //not supported right now
-#define PERIPHERAL_TYPE_SNAP NO_SNAP  //not supported right now
-#define COMPENSATE false              //not supported right now
-
-#define VERBOSE_LOGGING true  //whether to send INFO messages to serial
-
-#define SNAP_CFG_AUTO_BRAKE false
-#define SNAP_CFG_FAIL_BRAKE false
-#define SNAP_CFG_ENABLE_CURVE false
-#define SNAP_CFG_CURVE_VALUE 1
-  == == == =
->>>>>>> Stashed changes
-
 //hard defines, do NOT touch
-#define MOTOR_1_PIN D2
-#define MOTOR_2_PIN D1
-#define WEAPON_PIN D3
+#define PIN_MOTOR_1 D2
+#define PIN_MOTOR_2 D1
+#define PIN_WEAPON D3
 
-#define LED_1_PIN D9
-#define LED_2_PIN D8
+#define PIN_LED_1 D9
+#define PIN_LED_2 D8
 
-#define SS_RX_1_PIN 0
-#define SS_TX_1_PIN 1
-#define SS_RX_2_PIN 2
-#define SS_TX_2_PIN 3
+#define PIN_SS_RX_1 0
+#define PIN_SS_TX_1 1
+#define PIN_SS_RX_2 2
+#define PIN_SS_TX_2 3
 
-#define SNAP_CMD_WRITE_MOTOR_1 0xC9  //writing motors: write motor command followed by data value between 0 and 200
-#define SNAP_CMD_WRITE_MOTOR_2 0xCA
-#define SNAP_CMD_CURVE_SET_INTENSITY 0xCF  //curve set: curve set command followed by exponent value
-#define SNAP_CMD_CURVE_OFF 0xD0            //disable curving
-#define SNAP_CMD_BRAKE_ON 0xD1             //enables braking
-#define SNAP_CMD_BRAKE_OFF 0xD2            //disables braking
-#define SNAP_CMD_BRAKE_ON_FAILSAFE 0xD3    //brakes on failsafe
-#define SNAP_CMD_COAST_ON_FAILSAFE 0xD4    //coasts on failsafe
-#define SNAP_CMD_FAILSAFE 0xFF             //stops or brakes both motors depending on brake_on_failsafe
+#define CMD_SNAP_WRITE_MOTOR_1 0xC9  //writing motors: write motor command followed by data value between 0 and 200
+#define CMD_SNAP_WRITE_MOTOR_2 0xCA
+#define CMD_SNAP_CURVE_SET_INTENSITY 0xCF  //curve set: curve set command followed by exponent value
+#define CMD_SNAP_CURVE_OFF 0xD0            //disable curving
+#define CMD_SNAP_BRAKE_ON 0xD1             //enables braking
+#define CMD_SNAP_BRAKE_OFF 0xD2            //disables braking
+#define CMD_SNAP_BRAKE_ON_FAILSAFE 0xD3    //brakes on failsafe
+#define CMD_SNAP_COAST_ON_FAILSAFE 0xD4    //coasts on failsafe
+#define CMD_SNAP_FAILSAFE 0xFF             //stops or brakes both motors depending on brake_on_failsafe
 
 
 
-  //MAC address of your controller
-  uint8_t controller_mac[6] = { 0xF2, 0x8D, 0x95, 0xD5, 0x01, 0xE6 };
+//MAC address of your controller
+uint8_t controller_mac[6] = { 0xF2, 0x8D, 0x95, 0xD5, 0x01, 0xE6 };
 
 EspSoftwareSerial::UART snapSerial1;  //motor driver ONLY
 EspSoftwareSerial::UART snapSerial2;  //other peripheral ONLY
@@ -96,7 +71,6 @@ int motors_minimum_value;
 int motors_maximum_value;
 int battery_level;
 
-ControllerPtr myControllers[BP32_MAX_GAMEPADS];
 
 
 
@@ -130,6 +104,8 @@ enum snap_peripheral {
 snap_peripheral current_snap_peripheral = PERIPHERAL_TYPE_SNAP;
 
 
+
+ControllerPtr myControllers[BP32_MAX_GAMEPADS];
 
 
 

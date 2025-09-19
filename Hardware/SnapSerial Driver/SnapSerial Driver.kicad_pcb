@@ -101,13 +101,13 @@
 		(allow_soldermask_bridges_in_footprints no)
 		(tenting none)
 		(pcbplotparams
-			(layerselection 0x00000000_00000000_55555555_5755f5ff)
+			(layerselection 0x00000000_00000000_55555555_5555d550)
 			(plot_on_all_layers_selection 0x00000000_00000000_00000000_00000000)
 			(disableapertmacros no)
 			(usegerberextensions no)
 			(usegerberattributes yes)
 			(usegerberadvancedattributes yes)
-			(creategerberjobfile yes)
+			(creategerberjobfile no)
 			(dashed_line_dash_ratio 12.000000)
 			(dashed_line_gap_ratio 3.000000)
 			(svgprecision 4)
@@ -135,9 +135,9 @@
 			(subtractmaskfromsilk no)
 			(outputformat 1)
 			(mirror no)
-			(drillshape 1)
+			(drillshape 0)
 			(scaleselection 1)
-			(outputdirectory "")
+			(outputdirectory "C:/Users/icech/Downloads/")
 		)
 	)
 	(net 0 "")
@@ -419,7 +419,7 @@
 			(at 0 -2.77 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "361dfa7b-657a-478e-bf74-b59799214b5f")
+			(uuid "1f0005d4-0929-4913-b6b4-4d94d44f7697")
 			(effects
 				(font
 					(size 1 1)
@@ -430,7 +430,7 @@
 		(property "Value" "Power"
 			(at 0 5.31 0)
 			(layer "F.Fab")
-			(uuid "c0f966c7-9608-4349-8fac-3b52276f37d2")
+			(uuid "da8661f4-8e99-45a8-ac1b-48e0d1732cf9")
 			(effects
 				(font
 					(size 1 1)
@@ -442,7 +442,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "e87ef6fb-28fc-498b-9a22-95f0ef98d3a2")
+			(uuid "d0f0fb3b-0f83-4574-807f-3d76d5c61c2c")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -454,7 +454,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "eda3ff3a-86f4-4602-9bf4-16c6d0d7f665")
+			(uuid "1b75bb8c-b272-4535-8e87-e175f50eb792")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -652,6 +652,7 @@
 		)
 		(embedded_fonts no)
 		(model "${KICAD9_3DMODEL_DIR}/Connector_PinSocket_2.54mm.3dshapes/PinSocket_1x02_P2.54mm_Vertical.step"
+			(hide yes)
 			(offset
 				(xyz 0 0 0)
 			)
@@ -1706,6 +1707,7 @@
 		)
 		(embedded_fonts no)
 		(model "${KICAD9_3DMODEL_DIR}/Connector_PinSocket_2.54mm.3dshapes/PinSocket_1x02_P2.54mm_Vertical.step"
+			(hide yes)
 			(offset
 				(xyz 0 0 0)
 			)
@@ -2128,7 +2130,7 @@
 			(uuid "dd86d1c6-37f1-4449-b077-ab9c3aefd5fe")
 		)
 		(embedded_fonts no)
-		(model "${KICAD9_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.3mm.step"
+		(model "${KICAD9_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.29x3mm.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -2383,6 +2385,7 @@
 		)
 		(embedded_fonts no)
 		(model "${KICAD9_3DMODEL_DIR}/Connector_PinSocket_2.54mm.3dshapes/PinSocket_1x02_P2.54mm_Vertical.step"
+			(hide yes)
 			(offset
 				(xyz 0 0 0)
 			)
@@ -3470,7 +3473,7 @@
 			(uuid "bc366154-0d01-4a3e-9f1f-ba3fd079e9b9")
 		)
 		(embedded_fonts no)
-		(model "${KICAD9_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.3mm.step"
+		(model "${KICAD9_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.29x3mm.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -4068,6 +4071,7 @@
 		)
 		(embedded_fonts no)
 		(model "${KICAD9_3DMODEL_DIR}/Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x01_P2.54mm_Vertical.step"
+			(hide yes)
 			(offset
 				(xyz 0 0 0)
 			)
@@ -4949,6 +4953,17 @@
 			(uuid "96b3ad6c-e689-4259-a67d-27e82a871148")
 		)
 		(embedded_fonts no)
+		(model "${KICAD_USER_DIR}/Models/QWIIC_SNAPSERIAL.STEP"
+			(offset
+				(xyz 0 1.5 -0.3)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz -90 -0 -0)
+			)
+		)
 	)
 	(footprint "Capacitor_SMD:C_0805_2012Metric"
 		(layer "B.Cu")

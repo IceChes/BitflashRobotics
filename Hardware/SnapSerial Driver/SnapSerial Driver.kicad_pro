@@ -539,10 +539,10 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "C:/Users/icech/Downloads/",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "SnapSerial Driver.step",
       "svg": "",
       "vrml": ""
     },

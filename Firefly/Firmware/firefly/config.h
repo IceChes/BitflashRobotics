@@ -29,9 +29,7 @@
 #define PIN_SNAP_2_RX 6
 #define PIN_SNAP_2_TX 7
 #define PIN_ESC 2
-
+/*
 #define INTERNAL_DEVICE_ADDRESS FIREFLY_DEVICE_ADDRESS
 #define INTERNAL_DEVICE_EXPECTED_COMMAND_MAXIMUM FIREFLY_EXPECTED_COMMAND_MAXIMUM
-
-#include "bfr_provisions.h"
-#include "functions.h"
+*/

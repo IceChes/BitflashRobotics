@@ -116,6 +116,7 @@ void processImpulseData(PacketData &_d) {
 }
 
 //input data handling system
+//The following 
 typedef void (*DataProcessor)(PacketData &);
 
 //a single entry in the device registry looks like this
@@ -143,7 +144,7 @@ void handleInboundData(PacketData &_d) {
       device_registry[_d.device].process(_d);             //do the thing
     } else {
       if (USER_VERBOSE_LOGGING) {
-        Serial.println("WARN: Device ID " + String(_d.device) + " sent data to host, but it does not have a data processor. Ignoring.");
+        Serial.println("INFO: Device ID " + String(_d.device) + " sent data to host, but it does not have a data processor. Ignoring.");
       }
     }
   } else {

@@ -1,6 +1,3 @@
-#ifndef BFR_PROVISIONS_H
-#define BFR_PROVISIONS_H
-
 #define EXPECTED_START 255
 
 #define PACKET_START 0
@@ -50,13 +47,6 @@
 //info codes impulse can send (remember that 0 is reserved for global alive signals)
 //[there's nothing here]
 
-struct Configuration  {
- int address = 0;
- int command_maximum = 0;
-} ;
-
-extern Configuration config;
-
 struct PacketControls {
   uint8_t received_data;  //raw received serial data
   bool start_chain;       //whether or not the start packet was received
@@ -71,6 +61,8 @@ struct PacketData {
   int crc;
 };
 
+int packet_code;  //return code for the packet checker
+
 int packetBad(PacketControls _p) {
   CRC8 crc;
 
@@ -79,11 +71,11 @@ int packetBad(PacketControls _p) {
   int crc_value = crc.calc();
   crc.restart();
   if (
-    _p.packet[PACKET_START] == EXPECTED_START && _p.packet[PACKET_DEVICE] == Configuration.address && _p.packet[PACKET_COMMAND] < Configuration.command_maximum && _p.packet[PACKET_CRC] == crc_value) {
+    _p.packet[PACKET_START] == EXPECTED_START && _p.packet[PACKET_DEVICE] == INTERNAL_DEVICE_ADDRESS && _p.packet[PACKET_COMMAND] < INTERNAL_DEVICE_EXPECTED_COMMAND_MAXIMUM && _p.packet[PACKET_CRC] == crc_value) {
     return GLOBAL_PACKET_ERROR_NONE;  //no error
-  } else if (_p.packet[PACKET_DEVICE] != Configuration.address) {
+  } else if (_p.packet[PACKET_DEVICE] != INTERNAL_DEVICE_ADDRESS) {
     return GLOBAL_PACKET_ERROR_WRONG_ADDRESS;  //data recieved is not addressed to target device
-  } else if (_p.packet[PACKET_COMMAND] >= Configuration.command_maximum) {
+  } else if (_p.packet[PACKET_COMMAND] >= INTERNAL_DEVICE_EXPECTED_COMMAND_MAXIMUM) {
     return GLOBAL_PACKET_ERROR_OUT_OF_RANGE;  //command out of range
   } else if (_p.packet[PACKET_CRC] != crc_value) {
     return GLOBAL_PACKET_ERROR_BAD_CRC;  //crc value incorrect
@@ -145,5 +137,3 @@ int sendPacket(byte _id, byte _command, byte _payload, HardwareSerial* serialPor
 
   return packet[4];
 }
-
-#endif

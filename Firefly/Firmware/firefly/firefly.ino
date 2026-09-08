@@ -1,10 +1,13 @@
 #include <Bluepad32.h>
 #include <Servo.h>
 #include "CRC8.h"
+#include "bfr_provisions.h"
 #include "config.h"
+#include "functions.h"
 #include "HardwareSerial.h"
 
-
+config.address = 0;
+config.command_maximum = 0;
 
 //timer vars
 unsigned long timer;

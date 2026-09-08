@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "Impulse") (type "KiCad") (uri "${KIPRJMOD}/Impulse.pretty") (options "") (descr ""))
+)

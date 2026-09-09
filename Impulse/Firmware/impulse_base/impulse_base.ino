@@ -1,7 +1,9 @@
-#include "CRC8.h"
-#include "config.h"
+#include <CRC8.h>
+#include <bfr_provisions.h>
+#include <HardwareSerial.h>
 
-#include "HardwareSerial.h"
+#include "config.h"
+#include "functions.h"
 
 //timers
 unsigned long timer;
@@ -27,16 +29,17 @@ MotorControls m2;
 //packet controls
 PacketControls pi;
 PacketData d;
+int packet_code;
 
 //initialize crc
 CRC8 crc;
 
 
 
-
-
-
 void setup() {
+
+  assign(IMPULSE_DEVICE_ADDRESS, IMPULSE_EXPECTED_COMMAND_MAXIMUM);
+
   Serial.begin(115200);
   Serial.setTimeout(50);
 
@@ -69,6 +72,7 @@ void loop() {
   while (Serial.available()) {
     d = recieveAndAssign(pi, nullptr, &packet_code);
     if (!packet_code) {
+      last_packet = timer;
       //main switch
       //if this was a really complicated or nested switch, i'd use a LUT, but this is just one long-ish thing
       switch (d.command) {

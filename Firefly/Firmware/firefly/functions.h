@@ -139,7 +139,7 @@ void handleInboundData(PacketData &_d) {
 
   int registry_size = sizeof(device_registry) / sizeof(DeviceRegistry);  //divide the total size of the device registry by the size of a single entry to get the number of items in the registry
 
-  if (_d.device >= 0 && _d.device <= registry_size) {     //making sure the device's address is inside the registry
+  if (_d.device >= 0 && _d.device < registry_size) {      //making sure the device's address is inside the registry
     if (device_registry[_d.device].process != nullptr) {  //making sure the device actually has a processing function
       device_registry[_d.device].process(_d);             //do the thing
     } else {

@@ -1,13 +1,12 @@
+#include <bfr_provisions.h>
 #include <Bluepad32.h>
 #include <Servo.h>
-#include "CRC8.h"
-#include "bfr_provisions.h"
+#include <CRC8.h>
+#include <HardwareSerial.h>
+
 #include "config.h"
 #include "functions.h"
-#include "HardwareSerial.h"
 
-config.address = 0;
-config.command_maximum = 0;
 
 //timer vars
 unsigned long timer;
@@ -77,6 +76,9 @@ enum weapon_mode {
 weapon_mode current_weapon_mode = CONFIG_WEAPON_TYPE;
 
 void setup() {
+
+  assign(FIREFLY_DEVICE_ADDRESS, FIREFLY_EXPECTED_COMMAND_MAXIMUM);
+
   Serial.begin(115200);
   Serial.println("INFO: Serial initialized.");
 
@@ -96,7 +98,7 @@ void setup() {
 
 
   //impulse setup
-  if (current_drive_mode = IMPULSE) {
+  if (current_drive_mode == IMPULSE) {
     if (USER_IMPULSE_RESET_ON_BOOT) {
       sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_RESET, 0, &driver);
     }
@@ -136,17 +138,20 @@ void loop() {
     d_driver = recieveAndAssign(pi_driver, &driver, &driver_return_code);
     if (driver_return_code != GLOBAL_PACKET_ERROR_NONE && USER_VERBOSE_LOGGING) {
       Serial.println("WARN: got garbled packet from driver with error code " + String(driver_return_code));
+    } else if (driver_return_code == GLOBAL_PACKET_ERROR_NONE) {
+      handleInboundData(d_driver);
     }
-    handleInboundData(d_driver);
   }
 
   while (accessory.available()) {
     d_driver = recieveAndAssign(pi_accessory, &accessory, &accessory_return_code);
-    if (driver_return_code != GLOBAL_PACKET_ERROR_NONE && USER_VERBOSE_LOGGING) { 
+    if (driver_return_code != GLOBAL_PACKET_ERROR_NONE && USER_VERBOSE_LOGGING) {
       Serial.println("WARN: got garbled packet from accessory with error code " + String(accessory_return_code));
+    } else if (accessory_return_code_return_code == GLOBAL_PACKET_ERROR_NONE) {
+      handleInboundData(d_accessory);
     }
-    handleInboundData(d_accessory);
   }
+
 
 
 

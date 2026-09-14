@@ -29,7 +29,7 @@ MotorControls m2;
 //packet controls
 PacketControls pi;
 PacketData d;
-int packet_code;
+uint8_t packet_code;
 
 //initialize crc
 CRC8 crc;
@@ -70,8 +70,7 @@ void loop() {
 
 
   while (Serial.available()) {
-    d = recieveAndAssign(pi, nullptr, &packet_code);
-    if (!packet_code) {
+    if(receiveAndAssign(pi, &d, &packet_code) && !packet_code){
       last_packet = timer;
       //main switch
       //if this was a really complicated or nested switch, i'd use a LUT, but this is just one long-ish thing
@@ -182,12 +181,6 @@ void loop() {
     } else {
       sendPacket(FIREFLY_DEVICE_ADDRESS, IMPULSE_OUTBOUND_ERROR, packet_code);
     }
-    for (int i = 0; i <= 4; i++) {  //reset the packet to all 0
-      pi.packet[i] = 0;
-    }
-
-    pi.start_chain = false;
-    pi.num_bytes = 0;
   }
   if (timer - last_packet > USR_SERIAL_SAFETY_TIMEOUT) {
     digitalWrite(PIN_CHANNEL_1_A, brake_enabled);

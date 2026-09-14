@@ -1,6 +1,6 @@
 #include "bfr_provisions.h"
 
-void assign(int _addr, int _max){
+void assign(uint8_t _addr, uint8_t _max) {
     Configuration.address = _addr;
     Configuration.command_maximum = _max;
 }
@@ -28,7 +28,7 @@ int packetBad(PacketControls _p) {
 
 
 //function that looks for serial data and builds a packet with it
-PacketData recieveAndAssign(PacketControls _p, HardwareSerial* serialPort, int* return_code) {
+bool receiveAndAssign(PacketControls _p, PacketData* _d, uint8_t* return_code, HardwareSerial* serialPort) {
     if (serialPort == nullptr) {
         _p.received_data = Serial.read();
 
@@ -45,23 +45,22 @@ PacketData recieveAndAssign(PacketControls _p, HardwareSerial* serialPort, int* 
         _p.packet[_p.num_bytes] = _p.received_data;
     }
 
-    if (_p.num_bytes >= 4) {  //if we have enough bytes, calculate the checksum
-        _p.start_chain = false;       //whether or not the start packet was received
-        _p.num_bytes = 0;      //the number of bytes received so far
+    if (_p.num_bytes >= 4) {   //if we have enough bytes, calculate the checksum
+        _p.start_chain = false;  //whether or not the start packet was received
+        _p.num_bytes = 0;        //the number of bytes received so far
         int packet_status = packetBad(_p);
         *return_code = packet_status;
 
-        if (!packet_status) {  //if there is no error, continue
+        if (!packet_status && _d != nullptr) {  //if there is no error, continue
 
-            PacketData _d;
-
-            _d.device = _p.packet[PACKET_DEVICE];
-            _d.command = _p.packet[PACKET_COMMAND];
-            _d.payload = _p.packet[PACKET_PAYLOAD];
-            _d.crc = _p.packet[PACKET_CRC];
-
-            return _d;
+            _d->device = _p.packet[PACKET_DEVICE];
+            _d->command = _p.packet[PACKET_COMMAND];
+            _d->payload = _p.packet[PACKET_PAYLOAD];
+            _d->crc = _p.packet[PACKET_CRC];
         }
+        return true;
+    } else {
+        return false;
     }
 }
 

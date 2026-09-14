@@ -1,4 +1,4 @@
-#include <bfr_provisions.h>
+#include "bfr_provisions.h"
 #include <Bluepad32.h>
 #include <Servo.h>
 #include <CRC8.h>
@@ -31,8 +31,8 @@ bool weapon_locked = false;
 
 
 //data controls
-int driver_return_code;
-int accessory_return_code;
+uint8_t driver_return_code;
+uint8_t accessory_return_code;
 PacketControls pi_driver;
 PacketControls pi_accessory;
 PacketData d_driver;
@@ -135,23 +135,24 @@ void loop() {
 
   //update snap1 packet
   while (driver.available()) {
-    d_driver = recieveAndAssign(pi_driver, &driver, &driver_return_code);
-    if (driver_return_code != GLOBAL_PACKET_ERROR_NONE && USER_VERBOSE_LOGGING) {
-      Serial.println("WARN: got garbled packet from driver with error code " + String(driver_return_code));
-    } else if (driver_return_code == GLOBAL_PACKET_ERROR_NONE) {
-      handleInboundData(d_driver);
+    if (receiveAndAssign(pi_driver, &d_driver, &driver_return_code, &driver)) {
+      if (driver_return_code == GLOBAL_PACKET_ERROR_NONE) {
+        handleInboundData(d_driver);
+      } else if (driver_return_code != GLOBAL_PACKET_ERROR_NONE && USER_VERBOSE_LOGGING) {
+        Serial.println("WARN: got garbled packet from driver with error code " + String(driver_return_code));
+      }
     }
   }
 
   while (accessory.available()) {
-    d_driver = recieveAndAssign(pi_accessory, &accessory, &accessory_return_code);
-    if (driver_return_code != GLOBAL_PACKET_ERROR_NONE && USER_VERBOSE_LOGGING) {
-      Serial.println("WARN: got garbled packet from accessory with error code " + String(accessory_return_code));
-    } else if (accessory_return_code_return_code == GLOBAL_PACKET_ERROR_NONE) {
-      handleInboundData(d_accessory);
+    if (receiveAndAssign(pi_accessory, &d_accessory, &accessory_return_code, &accessory)) {
+      if (accessory_return_code == GLOBAL_PACKET_ERROR_NONE) {
+        handleInboundData(d_accessory);
+      } else if (accessory_return_code != GLOBAL_PACKET_ERROR_NONE && USER_VERBOSE_LOGGING) {
+        Serial.println("WARN: got garbled packet from accessory with error code " + String(accessory_return_code));
+      }
     }
   }
-
 
 
 
@@ -206,7 +207,6 @@ void loop() {
       rumble(200, 255, 0, myControllers[0]);
       last_button_press = timer;
     }
-    Serial.println("Inverted! LS: " + String(used_ls) + "|| RS: " + String(used_rs));
   } else if (!inverted) {
     used_ls = map(inv_ls, -509, 509, 509, -509);
     used_rs = map(inv_rs, -509, 509, 509, -509);
@@ -215,7 +215,6 @@ void loop() {
       rumble(200, 0, 255, myControllers[0]);
       last_button_press = timer;
     }
-    Serial.println("Normal! LS: " + String(used_ls) + " || RS: " + String(used_rs));
   }
 
 

@@ -62,22 +62,22 @@ struct PacketControls {
 };
 
 struct PacketData {
-  int device;
-  int command;  //the command part of the packet
-  int payload;  //the payload part of the packet
-  int crc;
+  uint8_t device;
+  uint8_t command;  //the command part of the packet
+  uint8_t payload;  //the payload part of the packet
+  uint8_t crc;
 };
 
 struct {
-  int address;
-  int command_maximum;
+  uint8_t address;
+  uint8_t command_maximum;
 } Configuration;
 
-void assign(int _addr, int _max);
+void assign(uint8_t _addr, uint8_t _max);
 
 int packetBad(PacketControls _p);
 
-PacketData recieveAndAssign(PacketControls _p, HardwareSerial* serialPort = nullptr, int* return_code = 0);
+bool receiveAndAssign(PacketControls _p, PacketData* _d, uint8_t* return_code, HardwareSerial* serialPort = nullptr);
 
 int sendPacket(byte _id, byte _command, byte _payload, HardwareSerial* serialPort = nullptr);
 

@@ -28,7 +28,9 @@ int packetBad(PacketControls _p) {
 
 
 //function that looks for serial data and builds a packet with it
-bool receiveAndAssign(PacketControls _p, PacketData* _d, uint8_t* return_code, HardwareSerial* serialPort) {
+bool receiveAndAssign(PacketData* _d, uint8_t* return_code, HardwareSerial* serialPort) {
+   PacketControls _p;
+   
     if (serialPort == nullptr) {
         _p.received_data = Serial.read();
 
@@ -65,7 +67,7 @@ bool receiveAndAssign(PacketControls _p, PacketData* _d, uint8_t* return_code, H
 }
 
 
-int sendPacket(byte _id, byte _command, byte _payload, HardwareSerial* serialPort) {
+uint8_t sendPacket(byte _id, byte _command, byte _payload, HardwareSerial* serialPort) {
     CRC8 crc;
 
     uint8_t packet[5] = { 255, _id, _command, _payload };

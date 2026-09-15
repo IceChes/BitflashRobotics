@@ -33,8 +33,7 @@ bool weapon_locked = false;
 //data controls
 uint8_t driver_return_code;
 uint8_t accessory_return_code;
-PacketControls pi_driver;
-PacketControls pi_accessory;
+
 PacketData d_driver;
 PacketData d_accessory;
 
@@ -135,7 +134,7 @@ void loop() {
 
   //update snap1 packet
   while (driver.available()) {
-    if (receiveAndAssign(pi_driver, &d_driver, &driver_return_code, &driver)) {
+    if (receiveAndAssign(&d_driver, &driver_return_code, &driver)) {
       if (driver_return_code == GLOBAL_PACKET_ERROR_NONE) {
         handleInboundData(d_driver);
       } else if (driver_return_code != GLOBAL_PACKET_ERROR_NONE && USER_VERBOSE_LOGGING) {
@@ -145,7 +144,7 @@ void loop() {
   }
 
   while (accessory.available()) {
-    if (receiveAndAssign(pi_accessory, &d_accessory, &accessory_return_code, &accessory)) {
+    if (receiveAndAssign(&d_accessory, &accessory_return_code, &accessory)) {
       if (accessory_return_code == GLOBAL_PACKET_ERROR_NONE) {
         handleInboundData(d_accessory);
       } else if (accessory_return_code != GLOBAL_PACKET_ERROR_NONE && USER_VERBOSE_LOGGING) {

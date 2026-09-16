@@ -59,7 +59,6 @@ void setup() {
 }
 
 void loop() {
-
   timer = millis();
 
   m1.curve_exponent = curve_exponent;

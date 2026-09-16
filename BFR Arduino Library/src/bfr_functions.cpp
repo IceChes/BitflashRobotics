@@ -13,11 +13,11 @@ int packetBad(PacketControls _p) {
     int crc_value = crc.calc();
     crc.restart();
     if (
-        _p.packet[PACKET_START] == EXPECTED_START && _p.packet[PACKET_DEVICE] == Configuration.address && _p.packet[PACKET_COMMAND] < Configuration.command_maximum && _p.packet[PACKET_CRC] == crc_value) {
+        _p.packet[PACKET_START] == EXPECTED_START && _p.packet[PACKET_DEVICE] == Configuration.address && _p.packet[PACKET_COMMAND] <= Configuration.command_maximum && _p.packet[PACKET_CRC] == crc_value) {
         return GLOBAL_PACKET_ERROR_NONE;  //no error
         } else if (_p.packet[PACKET_DEVICE] != Configuration.address) {
-            return GLOBAL_PACKET_ERROR_WRONG_ADDRESS;  //data recieved is not addressed to target device
-        } else if (_p.packet[PACKET_COMMAND] >= Configuration.command_maximum) {
+            return GLOBAL_PACKET_ERROR_WRONG_ADDRESS;  //data received is not addressed to target device
+        } else if (_p.packet[PACKET_COMMAND] > Configuration.command_maximum) {
             return GLOBAL_PACKET_ERROR_OUT_OF_RANGE;  //command out of range
         } else if (_p.packet[PACKET_CRC] != crc_value) {
             return GLOBAL_PACKET_ERROR_BAD_CRC;  //crc value incorrect

@@ -47,6 +47,7 @@ void setup() {
   timer = 0;
   last_timer = 0;
   curve_exponent = 0;
+  brake_timeout = 100;
   brake_enabled = true;
   failsafe_brake = true;
   motor_1_maximum_speed = USR_MOTOR_1_MAXIMUM_SPEED;
@@ -70,7 +71,7 @@ void loop() {
 
 
   while (Serial.available()) {
-    if(receiveAndAssign(pi, &d, &packet_code) && !packet_code){
+    if(receiveAndAssign(&d, &packet_code)){
       last_packet = timer;
       //main switch
       //if this was a really complicated or nested switch, i'd use a LUT, but this is just one long-ish thing
@@ -146,7 +147,7 @@ void loop() {
           break;
 
         case IMPULSE_COMMAND_CHANNEL_2_STOP:
-          if (brake_enabled) {
+          if (brake_enabled && (timer - last_motor_2_active > brake_timeout)) {
             digitalWrite(PIN_CHANNEL_2_A, 1);
             digitalWrite(PIN_CHANNEL_2_B, 1);
           } else {
@@ -174,6 +175,7 @@ void loop() {
           last_timer = 0;
           curve_exponent = 0;
           brake_enabled = true;
+          brake_timeout = 100;
           failsafe_brake = true;
           motor_1_maximum_speed = USR_MOTOR_1_MAXIMUM_SPEED;
           motor_2_maximum_speed = USR_MOTOR_2_MAXIMUM_SPEED;

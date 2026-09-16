@@ -59,8 +59,12 @@ bool receiveAndAssign(PacketData* _d, uint8_t* return_code, HardwareSerial* seri
             _d->command = _p.packet[PACKET_COMMAND];
             _d->payload = _p.packet[PACKET_PAYLOAD];
             _d->crc = _p.packet[PACKET_CRC];
+
+            return true;
         }
-        return true;
+        else {
+            return false;
+        }
     } else {
         return false;
     }

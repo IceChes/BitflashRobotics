@@ -56,6 +56,27 @@
 // Info codes Impulse can send (remember that 0 is reserved for global alive signals)
 // [there's nothing here]
 
+
+
+/*
+ * This is the finished PacketData struct.
+ * It contains a finished packet.
+ */
+
+struct PacketData {
+  uint8_t device;
+  uint8_t command;
+  uint8_t payload;
+  uint8_t crc;  //crc8 checksum
+};
+
+/*
+ * This is the PacketInput class. It makes it easier to handle incoming data streams as objects.
+ */
+
+class PacketInput {
+private:
+
 /*
  * This is the PacketControls struct.
  * It contains all of the variables and information related to handling incoming packets.
@@ -67,23 +88,69 @@
  * packet        : The incoming data's temporary storage array.
  */
 
-struct PacketControls {
-  uint8_t received_data;  //raw received serial data
-  bool start_chain;       //whether or not the start packet was received
-  int num_bytes = 0;      //the number of bytes received so far
-  uint8_t packet[5];      //the actual packet
-};
+  struct PacketControls {
+    uint8_t received_data;  //raw received serial data
+    bool start_chain;       //whether or not the start packet was received
+    int num_bytes = 0;      //the number of bytes received so far
+    uint8_t packet[5];      //the actual packet
+  } _p;
+
+public:
 
 /*
- * This is the finished PacketData struct.
- * It contains a finished packet.
+ * void packetBad();
+ * A helper function that runs an unfinished packet through all of the checks it
+ * has to go through before it is assigned to a PacketData struct. 
+ * You probably won't use this, it's used by receiveAndAssign().
+ *
+ * Returns GLOBAL_PACKET_ERROR_NONE (0) if everything is okay. Otherwise returns:
+ *
+ * GLOBAL_PACKET_ERROR_WRONG_ADDRESS (1)
+ * Packet was not addressed to the address given in assign().
+ *
+ * GLOBAL_PACKET_ERROR_OUT_OF_RANGE (2)
+ * Device does not have a corresponding command value for the command received.
+ *
+ * GLOBAL_PACKET_ERROR_BAD_CRC (3)
+ * All of the data is valid, but the CRC checksum doesn't seem to match up with the
+ * one expected.
+ *
+ * GLOBAL_PACKET_ERROR_OTHER_PACKET (4)
+ * Something else went wrong (catch-all, shouldn't happen).
  */
 
-struct PacketData {
-  uint8_t device;
-  uint8_t command; 
-  uint8_t payload; 
-  uint8_t crc; //crc8 checksum
+  int packetBad();
+
+/*
+ * bool receiveAndAssign(PacketData* d, uint8_t* return_code, HardwareSerial* serialPort);
+ * The primary function for receiving data into a packet. Returns true and
+ * assigns the packet information to the passed PacketData item when a finished
+ * and good packet is received.
+ *
+ * PacketData* d         : A reference to the PacketData struct to assign new packets to.
+ * uint8_t* return_code  : A reference to a return code value to assign the current status
+ *                         of the data collection. The following return codes can be
+ *                         assigned to return_code based on what is going on:
+ *
+ * GLOBAL_PACKET_ERROR_NONE (0)         : No error.
+ * GLOBAL_PACKET_ERROR_WRONG_ADDRESS (1): Packet was not addressed to the address
+ *                                        given in assign().
+ * GLOBAL_PACKET_ERROR_OUT_OF_RANGE (2) : Device does not have a corresponding command
+ *                                        value for the command received.
+ * GLOBAL_PACKET_ERROR_BAD_CRC (3)      : All of the data is valid, but the CRC
+ *                                        checksum doesn't seem to match up with the
+ *                                        one expected.
+ * GLOBAL_PACKET_ERROR_OTHER_PACKET (4) : Something else went wrong with the
+ *                                        packetBad() function (catch-all,
+ *                                        shouldn't happen).
+ *
+ * HardwareSerial* serialPort : An optional parameter which allows the user to pass
+ *                              on a HardwareSerial port. If this parameter is not
+ *                              passed (or nullptr is passed), the default
+ *                              Serial.read() will be used for reading new data.
+ */
+
+  bool receiveAndAssign(PacketData* _d, uint8_t* return_code, HardwareSerial* serialPort = nullptr);
 };
 
 /*
@@ -127,62 +194,11 @@ struct {
 
 void assign(uint8_t _addr, uint8_t _max);
 
-/*
- * void packetBad(PacketControls p);
- * A helper function that runs an unfinished packet through all of the checks it
- * has to go through before it is assigned to a PacketData struct.
- * You probably won't use this, it's used by receiveAndAssign().
- *
- * PacketControls p : The unfinished packet to check.
- *
- * Returns GLOBAL_PACKET_ERROR_NONE (0) if everything is okay. Otherwise returns:
- *
- * GLOBAL_PACKET_ERROR_WRONG_ADDRESS (1)
- * Packet was not addressed to the address given in assign().
- *
- * GLOBAL_PACKET_ERROR_OUT_OF_RANGE (2)
- * Device does not have a corresponding command value for the command received.
- *
- * GLOBAL_PACKET_ERROR_BAD_CRC (3)
- * All of the data is valid, but the CRC checksum doesn't seem to match up with the
- * one expected.
- *
- * GLOBAL_PACKET_ERROR_OTHER_PACKET (4)
- * Something else went wrong (catch-all, shouldn't happen).
- */
 
-int packetBad(PacketControls _p);
 
-/*
- * bool receiveAndAssign(PacketData* d, uint8_t* return_code, HardwareSerial* serialPort);
- * The primary function for receiving data into a packet. Returns true and
- * assigns the packet information to the passed PacketData item when a finished
- * and good packet is received.
- *
- * PacketData* d         : A reference to the PacketData struct to assign new packets to.
- * uint8_t* return_code  : A reference to a return code value to assign the current status
- *                         of the data collection. The following return codes can be
- *                         assigned to return_code based on what is going on:
- *
- * GLOBAL_PACKET_ERROR_NONE (0)         : No error.
- * GLOBAL_PACKET_ERROR_WRONG_ADDRESS (1): Packet was not addressed to the address
- *                                        given in assign().
- * GLOBAL_PACKET_ERROR_OUT_OF_RANGE (2) : Device does not have a corresponding command
- *                                        value for the command received.
- * GLOBAL_PACKET_ERROR_BAD_CRC (3)      : All of the data is valid, but the CRC
- *                                        checksum doesn't seem to match up with the
- *                                        one expected.
- * GLOBAL_PACKET_ERROR_OTHER_PACKET (4) : Something else went wrong with the
- *                                        packetBad() function (catch-all,
- *                                        shouldn't happen).
- *
- * HardwareSerial* serialPort : An optional parameter which allows the user to pass
- *                              on a HardwareSerial port. If this parameter is not
- *                              passed (or nullptr is passed), the default
- *                              Serial.read() will be used for reading new data.
- */
 
-bool receiveAndAssign(PacketData* _d, uint8_t* return_code, HardwareSerial* serialPort = nullptr);
+
+
 
 /*
  * sendPacket(uint8_t id, uint8_t command, uint8_t payload, HardwareSerial* serialPort)

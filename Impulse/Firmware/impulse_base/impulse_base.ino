@@ -27,7 +27,7 @@ MotorControls m1;
 MotorControls m2;
 
 //packet controls
-PacketControls pi;
+PacketInput pi;
 PacketData d;
 uint8_t packet_code;
 
@@ -70,9 +70,8 @@ void loop() {
 
 
   while (Serial.available()) {
-    if(receiveAndAssign(&d, &packet_code)){
+    if (pi.receiveAndAssign(&d, &packet_code)) {
       last_packet = timer;
-      //main switch
       //if this was a really complicated or nested switch, i'd use a LUT, but this is just one long-ish thing
       switch (d.command) {
         case IMPULSE_COMMAND_SET_CURVE:
@@ -179,7 +178,8 @@ void loop() {
           motor_1_maximum_speed = USR_MOTOR_1_MAXIMUM_SPEED;
           motor_2_maximum_speed = USR_MOTOR_2_MAXIMUM_SPEED;
       }
-    } else {
+    }
+    if (packet_code != 0) {
       sendPacket(FIREFLY_DEVICE_ADDRESS, IMPULSE_OUTBOUND_ERROR, packet_code);
     }
   }

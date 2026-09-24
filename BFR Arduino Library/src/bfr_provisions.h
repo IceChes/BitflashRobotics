@@ -74,8 +74,17 @@ struct PacketData {
  * This is the PacketInput class. It makes it easier to handle incoming data streams as objects.
  */
 
-class PacketInput {
+class DataStream {
 private:
+
+/*
+ * This is a pointer for the serial port associated with the input data stream.
+ * If there's no HardwareSerial port, it can be set to nullptr to use the default Serial port.
+ */
+
+  HardwareSerial* _serial;
+  uint8_t _host_addr;
+
 
 /*
  * This is the PacketControls struct.
@@ -96,6 +105,13 @@ private:
   } _p;
 
 public:
+
+/*
+ * Class constructor which passes the data stream's associated serial port.
+ * Defaults to nullptr if nothing is passed, using the default Serial port.
+ */
+
+  DataStream(uint8_t _host_address, HardwareSerial* _port = nullptr);
 
 /*
  * void packetBad();
@@ -150,7 +166,19 @@ public:
  *                              Serial.read() will be used for reading new data.
  */
 
-  bool receiveAndAssign(PacketData* _d, uint8_t* return_code, HardwareSerial* serialPort = nullptr);
+  bool receiveAndAssign(PacketData* _d, uint8_t* return_code);
+
+/*
+ * sendPacket(uint8_t id, uint8_t command, uint8_t payload, HardwareSerial* serialPort)
+ * The primary function for sending a packet. Automatically adds the preceding
+ * start byte and calculates/appends the CRC checksum. Returns the CRC checksum
+ * of the sent packet.
+ * uint8_t id       : The device ID of the target.
+ * uint8_t command   : The command value to send to the target.
+ * uint8_t payload   : The payload value to send to the target.
+ */
+  uint8_t sendPacket(uint8_t _command, uint8_t _payload);
+
 };
 
 /*
@@ -167,8 +195,6 @@ struct {
   uint8_t address;
   uint8_t command_maximum;
 } Configuration;
-
-// Function section
 
 /*
  * void assign(address, max);
@@ -200,17 +226,7 @@ void assign(uint8_t _addr, uint8_t _max);
 
 
 
-/*
- * sendPacket(uint8_t id, uint8_t command, uint8_t payload, HardwareSerial* serialPort)
- * The primary function for sending a packet. Automatically adds the preceding
- * start byte and calculates/appends the CRC checksum. Returns the CRC checksum
- * of the sent packet.
- *
- * uint8_t id       : The device ID of the target.
- * uint8_t command   : The command value to send to the target.
- * uint8_t payload   : The payload value to send to the target.
- */
 
-uint8_t sendPacket(uint8_t _id, uint8_t _command, uint8_t _payload, HardwareSerial* serialPort = nullptr);
+
 
 #endif

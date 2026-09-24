@@ -5,7 +5,12 @@ void assign(uint8_t _addr, uint8_t _max) {
   Configuration.command_maximum = _max;
 }
 
-int PacketInput::packetBad() {
+DataStream::DataStream(uint8_t _address, HardwareSerial* _port){
+  _serial = _port;
+  _host_addr = _address;
+}
+
+int DataStream::packetBad() {
   CRC8 crc;
 
 
@@ -26,19 +31,18 @@ int PacketInput::packetBad() {
   }
 }
 
-
 //function that looks for serial data and builds a packet with it
-bool PacketInput::receiveAndAssign(PacketData* _d, uint8_t* return_code, HardwareSerial* serialPort) {
+bool DataStream::receiveAndAssign(PacketData* _d, uint8_t* return_code) {
  
   if (return_code != nullptr) {
     return_code = GLOBAL_PACKET_ERROR_NONE;
   }
 
-  if (serialPort == nullptr) {
+  if (_serial == nullptr) {
     _p.received_data = Serial.read();
 
   } else {
-    _p.received_data = serialPort->read();
+    _p.received_data = _serial->read();
   }
 
   //if got start bit
@@ -75,18 +79,18 @@ bool PacketInput::receiveAndAssign(PacketData* _d, uint8_t* return_code, Hardwar
 }
 
 
-uint8_t sendPacket(byte _id, byte _command, byte _payload, HardwareSerial* serialPort) {
+uint8_t DataStream::sendPacket(byte _command, byte _payload) {
   CRC8 crc;
 
-  uint8_t packet[5] = { 255, _id, _command, _payload };
+  uint8_t packet[5] = { 255, _host_addr, _command, _payload };
 
   crc.add(packet, 4);
   packet[4] = crc.calc();
 
-  if (serialPort == nullptr) {
+  if (_serial == nullptr) {
     Serial.write(packet, sizeof(packet));
   } else {
-    serialPort->write(packet, sizeof(packet));
+    _serial->write(packet, sizeof(packet));
   }
 
   return packet[4];

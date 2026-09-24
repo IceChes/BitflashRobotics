@@ -30,36 +30,39 @@ bool weapon_locked = false;
 
 
 
-//data controls
-uint8_t driver_return_code;
-uint8_t accessory_return_code;
-
-PacketData d_driver;
-PacketData d_accessory;
-
 //data checksum item
 CRC8 crc_1;
 CRC8 crc_2;
 
 
 
-HardwareSerial driver(0);     //motor drivers are to be connected to the driver port
-HardwareSerial accessory(1);  //accessory modules are to be connected to the accessory port
-
-Servo motor_control;
+HardwareSerial DriverSerial(0);     //motor drivers are to be connected to the driver port
+HardwareSerial AccessorySerial(1);  //accessory modules are to be connected to the accessory port
 
 
 
-//MAC address of your controller
+Servo weapon_control;
+
+
+
+//MAC addresses
 //uint8_t controller_mac[6] = { 0xF2, 0x8D, 0x95, 0xD5, 0x01, 0xE6 };  //stadia
 //uint8_t controller_mac[6] = { 0xC8, 0x3F, 0x26, 0x8D, 0xE6, 0x28 }; //xbox
 
 
 
+//data controls
+DataStream driver(IMPULSE_DEVICE_ADDRESS, &DriverSerial);
+DataStream accessory(IMPULSE_DEVICE_ADDRESS, &AccessorySerial);
+
+uint8_t driver_return_code;
+uint8_t accessory_return_code;
 
 
 
-
+//input data structs
+PacketData d_driver;
+PacketData d_accessory;
 
 
 
@@ -68,11 +71,15 @@ enum drive_mode {
 };
 drive_mode current_drive_mode = CONFIG_DRIVE_TYPE;
 
+
+
 enum weapon_mode {
   NONE,
   BRUSHLESS
 };
 weapon_mode current_weapon_mode = CONFIG_WEAPON_TYPE;
+
+
 
 void setup() {
 
@@ -92,29 +99,29 @@ void setup() {
   Serial.println("BLUEPAD: Controller should be connected.");
 
   delay(3000);
-  driver.begin(115200, SERIAL_8N1, PIN_SNAP_1_RX, PIN_SNAP_1_TX);
-  accessory.begin(115200, SERIAL_8N1, PIN_SNAP_2_RX, PIN_SNAP_2_TX);
+  DriverSerial.begin(115200, SERIAL_8N1, PIN_SNAP_1_RX, PIN_SNAP_1_TX);
+  AccessorySerial.begin(115200, SERIAL_8N1, PIN_SNAP_2_RX, PIN_SNAP_2_TX);
 
 
   //impulse setup
   if (current_drive_mode == IMPULSE) {
     if (USER_IMPULSE_RESET_ON_BOOT) {
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_RESET, 0, &driver);
+      driver.sendPacket(IMPULSE_COMMAND_RESET, 0);
     }
 
-    sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_SET_CURVE, USER_IMPULSE_CURVE_LEVEL, &driver);
+    driver.sendPacket(IMPULSE_COMMAND_SET_CURVE, USER_IMPULSE_CURVE_LEVEL);
 
     if (USER_IMPULSE_BRAKE) {
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_SET_BRAKE, true, &driver);
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_SET_BRAKE_TIMEOUT, USER_BRAKE_TIMEOUT, &driver);
+      driver.sendPacket(IMPULSE_COMMAND_SET_BRAKE, true);
+      driver.sendPacket(IMPULSE_COMMAND_SET_BRAKE_TIMEOUT, USER_BRAKE_TIMEOUT);
     } else {
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_SET_BRAKE, false, &driver);
+      driver.sendPacket(IMPULSE_COMMAND_SET_BRAKE, false);
     }
 
     if (USER_IMPULSE_BRAKE_ON_STOP) {
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_SET_FAIL_BRAKE, true, &driver);
+      driver.sendPacket(IMPULSE_COMMAND_SET_FAIL_BRAKE, true);
     } else {
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_SET_FAIL_BRAKE, false, &driver);
+      driver.sendPacket(IMPULSE_COMMAND_SET_FAIL_BRAKE, false);
     }
   }
 }
@@ -133,8 +140,8 @@ void loop() {
 
 
   //update snap1 packet
-  while (driver.available()) {
-    if (receiveAndAssign(&d_driver, &driver_return_code, &driver)) {
+  while (DriverSerial.available()) {
+    if (driver.receiveAndAssign(&d_driver, &driver_return_code)) {
       if (driver_return_code == GLOBAL_PACKET_ERROR_NONE) {
         handleInboundData(d_driver);
       } else if (driver_return_code != GLOBAL_PACKET_ERROR_NONE && USER_VERBOSE_LOGGING) {
@@ -143,8 +150,8 @@ void loop() {
     }
   }
 
-  while (accessory.available()) {
-    if (receiveAndAssign(&d_accessory, &accessory_return_code, &accessory)) {
+  while (AccessorySerial.available()) {
+    if (accessory.receiveAndAssign(&d_accessory, &accessory_return_code)) {
       if (accessory_return_code == GLOBAL_PACKET_ERROR_NONE) {
         handleInboundData(d_accessory);
       } else if (accessory_return_code != GLOBAL_PACKET_ERROR_NONE && USER_VERBOSE_LOGGING) {
@@ -180,19 +187,19 @@ void loop() {
   //Impulse driver handling
   if (current_drive_mode == IMPULSE) {
     if (used_ls > 100) {
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_CHANNEL_1_FORWARDS, map(used_ls, 100, 509, 0, USER_MOTOR_1_MAXIMUM_SPEED), &driver);
+      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_1_FORWARDS, map(used_ls, 100, 509, 0, USER_MOTOR_1_MAXIMUM_SPEED));
     } else if (used_ls < -100) {
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_CHANNEL_1_BACKWARDS, map(used_ls, -100, -509, 0, USER_MOTOR_1_MAXIMUM_SPEED), &driver);
+      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_1_BACKWARDS, map(used_ls, -100, -509, 0, USER_MOTOR_1_MAXIMUM_SPEED));
     } else {
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_CHANNEL_1_STOP, 0, &driver);
+      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_1_STOP, 0);
     }
 
     if (used_rs > 100) {
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_CHANNEL_2_FORWARDS, map(used_rs, 100, 509, 0, USER_MOTOR_2_MAXIMUM_SPEED), &driver);
+      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_2_FORWARDS, map(used_rs, 100, 509, 0, USER_MOTOR_2_MAXIMUM_SPEED));
     } else if (used_rs < -100) {
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_CHANNEL_2_BACKWARDS, map(used_rs, -100, -509, 0, USER_MOTOR_2_MAXIMUM_SPEED), &driver);
+      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_2_BACKWARDS, map(used_rs, -100, -509, 0, USER_MOTOR_2_MAXIMUM_SPEED));
     } else {
-      sendPacket(IMPULSE_DEVICE_ADDRESS, IMPULSE_COMMAND_CHANNEL_2_STOP, 0, &driver);
+      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_2_STOP, 0);
     }
   }
 
@@ -241,7 +248,7 @@ void loop() {
       target_esc_value = map(rt, 0, 1020, 1000, USER_WEAPON_MAXIMUM_SPEED);
     }
 
-    motor_control.write(PIN_ESC, esc_value);
+    weapon_control.write(PIN_ESC, esc_value);
   }
 
 

@@ -26,8 +26,9 @@ bool motor_2_active;
 MotorControls m1;
 MotorControls m2;
 
-//packet controls
-PacketInput pi;
+//inbound datastream controls
+
+DataStream host(FIREFLY_DEVICE_ADDRESS);
 PacketData d;
 uint8_t packet_code;
 
@@ -55,7 +56,7 @@ void setup() {
 
   crc.restart();
 
-  sendPacket(FIREFLY_DEVICE_ADDRESS, IMPULSE_OUTBOUND_INFO, GLOBAL_INFO_DEVICE_READY);
+  host.sendPacket(IMPULSE_OUTBOUND_INFO, GLOBAL_INFO_DEVICE_READY);
 }
 
 void loop() {
@@ -70,7 +71,7 @@ void loop() {
 
 
   while (Serial.available()) {
-    if (pi.receiveAndAssign(&d, &packet_code)) {
+    if (host.receiveAndAssign(&d, &packet_code)) {
       last_packet = timer;
       //if this was a really complicated or nested switch, i'd use a LUT, but this is just one long-ish thing
       switch (d.command) {
@@ -180,7 +181,7 @@ void loop() {
       }
     }
     if (packet_code != 0) {
-      sendPacket(FIREFLY_DEVICE_ADDRESS, IMPULSE_OUTBOUND_ERROR, packet_code);
+      host.sendPacket(IMPULSE_OUTBOUND_ERROR, packet_code);
     }
   }
   if (timer - last_packet > USR_SERIAL_SAFETY_TIMEOUT) {

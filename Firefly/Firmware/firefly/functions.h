@@ -17,6 +17,7 @@ int dpad_state;  //1=up, 2=down, 4=right, 8=left
 int buttons_state;
 bool super;         //xbox/stadia button
 bool data_updated;  //if there is new controller data
+bool controller_connected = false;
 ControllerPtr myControllers[BP32_MAX_GAMEPADS];
 
 
@@ -43,6 +44,7 @@ void triggerFailsafe() {
 //Bluepad32 connection callback. I don't know how this works, but I am going to add some failsafe code in there.
 void onConnectedController(ControllerPtr ctl) {
   Serial.println("BLUEPAD: Controller is connected!");
+  controller_connected = true;
   myControllers[0] = ctl;
 }
 
@@ -51,6 +53,7 @@ void onConnectedController(ControllerPtr ctl) {
 //Bluepad32 disconnect callback
 void onDisconnectedController(ControllerPtr ctl) {
   Serial.println("ERROR: Lost controller connection! Failsafing...");
+  controller_connected = false;
   BP32.enableNewBluetoothConnections(true);
   triggerFailsafe();
 }

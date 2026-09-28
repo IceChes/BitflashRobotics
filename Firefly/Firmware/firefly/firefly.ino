@@ -16,8 +16,6 @@ unsigned long last_button_press;
 unsigned long last_esc_update_time;
 unsigned long last_debug_update;
 
-
-
 //control vars
 int esc_value = 1000;
 int target_esc_value;
@@ -253,7 +251,13 @@ void loop() {
 
 
 
-  if (timer - last_debug_update > USER_DEBUG_UPDATE_INTERVAL) {
-    Serial.println("");
+  if ((timer - last_debug_update > USER_DEBUG_UPDATE_INTERVAL) && USER_VERBOSE_LOGGING) {
+    if (controller_connected) {
+      Serial.println("INFO: Controller connected.");
+    }
+    else{
+      Serial.println("WARN: Controller not connected!");
+    }
+    last_debug_update = timer;
   }
 }

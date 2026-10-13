@@ -34,8 +34,8 @@ CRC8 crc_2;
 
 
 
-HardwareSerial DriverSerial(0);     //motor drivers are to be connected to the driver port
-HardwareSerial AccessorySerial(1);  //accessory modules are to be connected to the accessory port
+HardwareSerial DriverSerial(1);     //motor drivers are to be connected to the driver port
+HardwareSerial AccessorySerial(0);  //accessory modules are to be connected to the accessory port
 
 
 
@@ -97,7 +97,7 @@ void setup() {
   Serial.println("BLUEPAD: Controller should be connected.");
 
   delay(3000);
-  DriverSerial.begin(115200, SERIAL_8N1, PIN_SNAP_1_RX, PIN_SNAP_1_TX);
+  DriverSerial.begin(115200, SERIAL_8N1, 9, 10);
   AccessorySerial.begin(115200, SERIAL_8N1, PIN_SNAP_2_RX, PIN_SNAP_2_TX);
 
 

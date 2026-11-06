@@ -15,7 +15,7 @@
 
 #define USER_VERBOSE_LOGGING true
 
-#define USER_IMPULSE_CURVE_LEVEL 100       //0 for off, 1-3 for lo-hi
+#define USER_IMPULSE_CURVE_LEVEL 10       //0 for off, 1-3 for lo-hi
 #define USER_IMPULSE_BRAKE true     //0 for no brake, 1-3 for lo-hi
 #define USER_IMPULSE_BRAKE_ON_STOP true     //0 for no brake, 1-3 for lo-hi
 #define USER_IMPULSE_RESET_ON_BOOT true  //reset the impulse driver on every reciever bootup

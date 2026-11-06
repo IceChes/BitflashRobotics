@@ -9,22 +9,10 @@
 
 
 //timer vars
-unsigned long timer;
-unsigned long last_motor_1_active;
-unsigned long last_motor_2_active;
-unsigned long last_button_press;
-unsigned long last_esc_update_time;
-unsigned long last_debug_update;
+
 
 //control vars
-int esc_value = 1000;
-int target_esc_value;
-int motor_1_value;
-int motor_2_value;
-bool motor_1_active;
-bool motor_2_active;
-bool inverted = false;
-bool weapon_locked = false;
+
 
 
 
@@ -37,7 +25,7 @@ CRC8 crc_2;
 HardwareSerial DriverSerial(1);     //motor drivers are to be connected to the driver port
 HardwareSerial AccessorySerial(0);  //accessory modules are to be connected to the accessory port
 
-
+Firefly firefly;
 
 Servo weapon_control;
 
@@ -133,7 +121,7 @@ void loop() {
 
 
   //update timer
-  timer = millis();
+  firefly.main_timer = millis();
 
 
 
@@ -161,41 +149,42 @@ void loop() {
 
 
   //process the controller data if there is new controller data.
-  data_updated = BP32.update();
-  if (data_updated) {
+  stadia.data_updated = BP32.update();
+  if (stadia.data_updated) {
     processControllers();
   }
 
 
 
   //Motor inverts
+  //eventually want to optimize this to integrate with the invert buttn
   if (USER_INVERT_MOTOR_1) {
-    inv_ls = map(ls, 509, -509, -509, 509);
+    stadia.inv_ls = map(stadia.ls, 509, -509, -509, 509);
   } else {
-    inv_ls = ls;
+    stadia.inv_ls = stadia.ls;
   }
 
   if (USER_INVERT_MOTOR_2) {
-    inv_rs = map(rs, 509, -509, -509, 509);
+    stadia.inv_rs = map(stadia.rs, 509, -509, -509, 509);
   } else {
-    inv_rs = rs;
+    stadia.inv_rs = stadia.rs;
   }
 
 
   //Impulse driver handling
   if (current_drive_mode == IMPULSE) {
-    if (used_ls > 100) {
-      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_1_FORWARDS, map(used_ls, 100, 509, 0, USER_MOTOR_1_MAXIMUM_SPEED));
-    } else if (used_ls < -100) {
-      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_1_BACKWARDS, map(used_ls, -100, -509, 0, USER_MOTOR_1_MAXIMUM_SPEED));
+    if (stadia.used_ls > 100) {
+      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_1_FORWARDS, map(stadia.used_ls, 100, 509, 0, USER_MOTOR_1_MAXIMUM_SPEED));
+    } else if (stadia.used_ls < -100) {
+      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_1_BACKWARDS, map(stadia.used_ls, -100, -509, 0, USER_MOTOR_1_MAXIMUM_SPEED));
     } else {
       driver.sendPacket(IMPULSE_COMMAND_CHANNEL_1_STOP, 0);
     }
 
-    if (used_rs > 100) {
-      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_2_FORWARDS, map(used_rs, 100, 509, 0, USER_MOTOR_2_MAXIMUM_SPEED));
-    } else if (used_rs < -100) {
-      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_2_BACKWARDS, map(used_rs, -100, -509, 0, USER_MOTOR_2_MAXIMUM_SPEED));
+    if (stadia.used_rs > 100) {
+      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_2_FORWARDS, map(stadia.used_rs, 100, 509, 0, USER_MOTOR_2_MAXIMUM_SPEED));
+    } else if (stadia.used_rs < -100) {
+      driver.sendPacket(IMPULSE_COMMAND_CHANNEL_2_BACKWARDS, map(stadia.used_rs, -100, -509, 0, USER_MOTOR_2_MAXIMUM_SPEED));
     } else {
       driver.sendPacket(IMPULSE_COMMAND_CHANNEL_2_STOP, 0);
     }
@@ -203,61 +192,63 @@ void loop() {
 
 
   //inversion handling. this logic will work regardless of what esc is selected
-  if (inverted) {
-    used_ls = inv_rs;
-    used_rs = inv_ls;
-    if (dpad_state == 1) {
-      inverted = false;
+  if (firefly.inverted) {
+    stadia.used_ls = stadia.inv_rs;
+    stadia.used_rs = stadia.inv_ls;
+    if (stadia.dpad_state == 1) {
+      firefly.inverted = false;
       rumble(200, 255, 0, myControllers[0]);
-      last_button_press = timer;
+      firefly.last_button_press = firefly.main_timer;
     }
-  } else if (!inverted) {
-    used_ls = map(inv_ls, -509, 509, 509, -509);
-    used_rs = map(inv_rs, -509, 509, 509, -509);
-    if (dpad_state == 2) {
-      inverted = true;
+  } else if (!firefly.inverted) {
+    stadia.used_ls = map(stadia.inv_ls, -509, 509, 509, -509);
+    stadia.used_rs = map(stadia.inv_rs, -509, 509, 509, -509);
+    if (stadia.dpad_state == 2) {
+      firefly.inverted = true;
       rumble(200, 0, 255, myControllers[0]);
-      last_button_press = timer;
+      firefly.last_button_press = firefly.main_timer;
     }
   }
 
 
 
   if (current_weapon_mode == BRUSHLESS) {
-    if (target_esc_value > esc_value && (timer - last_esc_update_time > 1)) {
-      esc_value += USER_WEAPON_RATE_LIMIT;
-      last_esc_update_time = timer;
-    } else if (target_esc_value < esc_value && (timer - last_esc_update_time > 1)) {
-      esc_value -= USER_WEAPON_RATE_LIMIT;
-      last_esc_update_time = timer;
+    if (firefly.target_esc_value > firefly.esc_value && (firefly.main_timer - firefly.last_esc_update_time > 1)) {
+      firefly.esc_value += USER_WEAPON_RATE_LIMIT;
+      firefly.last_esc_update_time = firefly.main_timer;
+    } else if (firefly.target_esc_value < firefly.esc_value && (firefly.main_timer - firefly.last_esc_update_time > 1)) {
+      firefly.esc_value -= USER_WEAPON_RATE_LIMIT;
+      firefly.last_esc_update_time = firefly.main_timer;
     }
 
     //Toggle the throttle lock if A is pressed.
-    if (rb && (timer - last_button_press > 200)) {
-      weapon_locked = !weapon_locked;
+    if (stadia.rb && (firefly.main_timer - firefly.last_button_press > 200)) {
+      firefly.weapon_locked = !firefly.weapon_locked;
       rumble(200, 255, 0, myControllers[0]);
-      last_button_press = timer;
+      firefly.last_button_press = firefly.main_timer;
     }
 
     //If the throttle is locked, just make the target ESC value the current ESC value
-    if (weapon_locked) {
-      target_esc_value = esc_value;
+    if (firefly.weapon_locked) {
+      firefly.target_esc_value = firefly.esc_value;
     } else {  //Otherwise, map RT as usual.
-      target_esc_value = map(rt, 0, 1020, 1000, USER_WEAPON_MAXIMUM_SPEED);
+      firefly.target_esc_value = map(stadia.rt, 0, 1020, 1000, USER_WEAPON_MAXIMUM_SPEED);
     }
 
-    weapon_control.write(PIN_ESC, esc_value);
+    weapon_control.write(PIN_ESC, firefly.esc_value);
   }
 
 
 
-  if ((timer - last_debug_update > USER_DEBUG_UPDATE_INTERVAL) && USER_VERBOSE_LOGGING) {
-    if (controller_connected) {
+  if ((firefly.main_timer - firefly.last_debug_update > USER_DEBUG_UPDATE_INTERVAL) && USER_VERBOSE_LOGGING) {
+    if (stadia.controller_connected) {
       Serial.println("INFO: Controller connected.");
+      Serial.println("INFO: Inversion status: " + String(firefly.inverted));
+      Serial.println("INFO: Weapon interlock status: " + String(firefly.weapon_locked));
     }
     else{
       Serial.println("WARN: Controller not connected!");
     }
-    last_debug_update = timer;
+    firefly.last_debug_update = firefly.main_timer;
   }
 }

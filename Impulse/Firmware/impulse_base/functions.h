@@ -8,7 +8,15 @@ struct MotorControls {
 
 //impulse-specific PWM calculation code
 int calculatePWM(MotorControls _MotorControl) {
-  float _normalized = map(_MotorControl.payload, 0, 255, 0, 255) / 255.0;
-  float _curve_value = _MotorControl.maximum_speed * pow(_normalized, _MotorControl.curve_exponent);
-  return int(_curve_value);
+
+  if (_MotorControl.maximum_speed <= 0) {
+    return 0;
+  }
+  else{
+  float _normalized = float(_MotorControl.payload) / float(_MotorControl.maximum_speed);
+  float _curved_value = pow(_normalized, _MotorControl.curve_exponent);
+  return int(_curved_value * _MotorControl.maximum_speed);
+  }
+
+
 }

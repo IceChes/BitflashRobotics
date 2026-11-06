@@ -24,7 +24,7 @@ void setup(){
 
   // start up our communication
   Serial.begin(9600);
-  FireflySerial.begin(115200);
+  FireflySerial.begin(115200, SERIAL_8N1, 9, 10);
 }
 
 void loop(){

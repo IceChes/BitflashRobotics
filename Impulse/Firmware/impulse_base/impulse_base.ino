@@ -9,6 +9,7 @@
 unsigned long timer;
 unsigned long last_timer;
 unsigned long last_packet;
+unsigned long last_heartbeat;
 unsigned long last_motor_1_active;
 unsigned long last_motor_2_active;
 
@@ -47,7 +48,7 @@ void setup() {
   //reset everything to default values
   timer = 0;
   last_timer = 0;
-  curve_exponent = 0;
+  curve_exponent = 1;
   brake_timeout = 100;
   brake_enabled = true;
   failsafe_brake = true;
@@ -182,6 +183,10 @@ void loop() {
     }
     if (packet_code != 0) {
       host.sendPacket(IMPULSE_OUTBOUND_ERROR, packet_code);
+    }
+
+    if(timer - last_heartbeat > 100){
+      host.sendPacket(IMPULSE_OUTBOUND_INFO, GLOBAL_INFO_HEARTBEAT);
     }
   }
   if (timer - last_packet > USR_SERIAL_SAFETY_TIMEOUT) {

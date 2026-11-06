@@ -1,50 +1,77 @@
-//controller vars
-int ls;      //left stick
-int rs;      //right stick
-int inv_ls;  //the stick value after the inversion logic processes it
-int inv_rs;
-int used_ls;  //the stick value the code will actually use
-int used_rs;
-bool lb;  //left bumper
-bool rb;  //right bumper
-int lt;   //left trigger
-int rt;   //right trigger
-bool a;
-bool b;
-bool x;
-bool y;
-int dpad_state;  //1=up, 2=down, 4=right, 8=left
-int buttons_state;
-bool super;         //xbox/stadia button
-bool data_updated;  //if there is new controller data
-bool controller_connected = false;
-ControllerPtr myControllers[BP32_MAX_GAMEPADS];
+//current computer state
+struct Firefly {
 
+  bool driver_alive;
+  bool acc_alive;
+
+  bool firefly_ok;
+
+  unsigned long main_timer;
+  unsigned long last_driver_heartbeat;
+  unsigned long last_acc_heartbeat;
+  unsigned long last_button_press;
+  unsigned long last_esc_update_time;
+  unsigned long last_debug_update;
+
+  int esc_value = 1000;
+  int target_esc_value;
+  int motor_1_value;
+  int motor_2_value;
+  bool motor_1_active;
+  bool motor_2_active;
+  bool inverted = false;
+  bool weapon_locked = false;
+};
+
+//controller vars
+struct {
+  int ls;      //left stick
+  int rs;      //right stick
+  int inv_ls;  //the stick value after the inversion logic processes it
+  int inv_rs;
+  int used_ls;  //the stick value the code will actually use
+  int used_rs;
+  bool lb;  //left bumper
+  bool rb;  //right bumper
+  int lt;   //left trigger
+  int rt;   //right trigger
+  bool a;
+  bool b;
+  bool x;
+  bool y;
+  int dpad_state;  //1=up, 2=down, 4=right, 8=left
+  int buttons_state;
+  bool super;         //xbox/stadia button
+  bool data_updated;  //if there is new controller data
+  bool controller_connected = false;
+} stadia;
+
+ControllerPtr myControllers[BP32_MAX_GAMEPADS];
 
 //FUNCTION ZONE
 void triggerFailsafe() {
   //Failsafe by setting all the controller variables to their rest states.
   //The rate limit code for the weapon will handle the throttling-down.
   Serial.println("ERROR: Controller disconnected! Failsafing...");
-  ls = 0;
-  rs = 0;
-  lb = false;
-  rb = false;
-  lt = 0;
-  rt = 0;
-  a = false;
-  b = false;
-  x = false;
-  y = false;
-  buttons_state = 0;
-  dpad_state = 0;
-  super = false;
+  stadia.ls = 0;
+  stadia.rs = 0;
+  stadia.lb = false;
+  stadia.rb = false;
+  stadia.lt = 0;
+  stadia.rt = 0;
+  stadia.a = false;
+  stadia.b = false;
+  stadia.x = false;
+  stadia.y = false;
+  stadia.buttons_state = 0;
+  stadia.dpad_state = 0;
+  stadia.super = false;
 }
 
 //Bluepad32 connection callback. I don't know how this works, but I am going to add some failsafe code in there.
 void onConnectedController(ControllerPtr ctl) {
   Serial.println("BLUEPAD: Controller is connected!");
-  controller_connected = true;
+  stadia.controller_connected = true;
   myControllers[0] = ctl;
 }
 
@@ -53,26 +80,26 @@ void onConnectedController(ControllerPtr ctl) {
 //Bluepad32 disconnect callback
 void onDisconnectedController(ControllerPtr ctl) {
   Serial.println("ERROR: Lost controller connection! Failsafing...");
-  controller_connected = false;
+  stadia.controller_connected = false;
   BP32.enableNewBluetoothConnections(true);
   triggerFailsafe();
 }
 
 void processGamepad(ControllerPtr ctl) {
 
-  ls = ctl->axisY();
-  rs = ctl->axisRY();
-  lb = ctl->l1();
-  rb = ctl->r1();
-  lt = ctl->brake();
-  rt = ctl->throttle();
-  a = ctl->a();
-  b = ctl->b();
-  x = ctl->x();
-  y = ctl->y();
-  buttons_state = ctl->buttons();
-  dpad_state = ctl->dpad();
-  super = ctl->miscSystem();
+  stadia.ls = ctl->axisY();
+  stadia.rs = ctl->axisRY();
+  stadia.lb = ctl->l1();
+  stadia.rb = ctl->r1();
+  stadia.lt = ctl->brake();
+  stadia.rt = ctl->throttle();
+  stadia.a = ctl->a();
+  stadia.b = ctl->b();
+  stadia.x = ctl->x();
+  stadia.y = ctl->y();
+  stadia.buttons_state = ctl->buttons();
+  stadia.dpad_state = ctl->dpad();
+  stadia.super = ctl->miscSystem();
   //This was in the example code. Saving it for later:
   //ctl->playDualRumble(0 /* delayedStartMs */, 2000 /* durationMs */, 255 /* weakMagnitude */, 255 /* strongMagnitude */);
 }
@@ -92,12 +119,8 @@ void processControllers() {
 
 
 
-//not used yet, may never be used, will remove if that's the case
-struct FireflyStatus {
-  bool driver_ok;
-  bool acc_ok;
-  bool firefly_ok;
-};
+
+
 
 
 //the spooky zone of inbound data handling. all this stuff actually uses the packets that are built by the above function
@@ -111,15 +134,23 @@ void processImpulseData(PacketData &_d) {
       }
       break;
     case IMPULSE_OUTBOUND_INFO:
-      if (USER_VERBOSE_LOGGING) {
-        Serial.println("INFO: Impulse online.");  //isn't it so nice to say that something works?
-      }                                           //impulse isn't able to say anything other than that it booted, so we don't even have to check the payload
+      switch (_d.payload) {
+        case GLOBAL_INFO_DEVICE_READY:
+          if (USER_VERBOSE_LOGGING) {
+            Serial.println("INFO: Impulse online");
+          }
+          break;
+        case GLOBAL_INFO_HEARTBEAT:
+          if (USER_VERBOSE_LOGGING) {
+            Serial.println("INFO: Got heartbeat from Impulse");
+          }
+          break;
+      }
       break;
   }
 }
 
 //input data handling system
-//The following 
 typedef void (*DataProcessor)(PacketData &);
 
 //a single entry in the device registry looks like this
@@ -151,6 +182,6 @@ void handleInboundData(PacketData &_d) {
       }
     }
   } else {
-    Serial.println("ERROR: Got data from device ID " + String(_d.device) + " which does not exist in the device registry.");
+    Serial.println("ERROR: Got data from device ID " + String(_d.device) + ", which does not exist in the device registry.");
   }
 }
